@@ -342,8 +342,8 @@ MonoBehaviour:
       _screenName: FaderCanvas
     _menuData:
       _screenName: MenuCanvas
-    _storyData:
-      _screenName: StoryCanvas
+    _optionsData:
+      _screenName: OptionsCanvas
 --- !u!4 &404478306
 Transform:
   m_ObjectHideFlags: 0

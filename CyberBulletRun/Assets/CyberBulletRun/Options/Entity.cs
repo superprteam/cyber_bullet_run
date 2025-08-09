@@ -3,11 +3,10 @@ using Shared.Disposable;
 using Shared.LocalCache;
 using Shared.Requests;
 using System;
-using System.Collections.Generic;
-using CyberBulletRun.Menu.View;
+using CyberBulletRun.Options.View;
 using UnityEngine;
 
-namespace CyberBulletRun.Menu 
+namespace CyberBulletRun.Options 
 {
     public sealed class Entity : BaseDisposable
     {
@@ -18,30 +17,37 @@ namespace CyberBulletRun.Menu
 
         private IScreen _screen;
         private readonly Ctx _ctx;
-        private Action<string> _onButtonClick;
+
+        private Action _onHide;
 
         public Entity(Ctx ctx)
         {
             _ctx = ctx;
         }
 
-        public async UniTask Init(Action<string> OnButtonClick) {
-            _onButtonClick = OnButtonClick;
+        public async UniTask Init(Action hideCallback) {
+            _onHide = hideCallback;
             var asset = await Cacher.GetBundle("main", _ctx.Data.ScreenName);
             var go = GameObject.Instantiate(asset as GameObject);
             _screen = go.GetComponent<IScreen>();
-            _screen.Init(_onButtonClick);
+            _screen.Init(_onHide);
+        }
+
+        public void ShowImmediate() => _screen.ShowImmediate();
+        public void HideImmediate() {
+            _screen.HideImmediate();
+            _onHide?.Invoke();
         }
 
         public async UniTask Show() => await _screen.Show();
-        public void HideImmediate() => _screen.HideImmediate();
+        public async UniTask Hide() {
+            await _screen.Hide();
+            _onHide?.Invoke();
+        }
 
         protected override void OnDispose()
         {
-            base.OnDispose();
-            HideImmediate();
             _screen.Release();
         }
     }
 }
-
