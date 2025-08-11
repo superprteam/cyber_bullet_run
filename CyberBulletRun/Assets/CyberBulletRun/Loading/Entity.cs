@@ -3,6 +3,7 @@ using Cysharp.Threading.Tasks;
 using Shared.Disposable;
 using Shared.LocalCache;
 using Shared.Requests;
+using Shared.UI;
 using UnityEngine;
 
 namespace CyberBulletRun.Loading
@@ -14,7 +15,7 @@ namespace CyberBulletRun.Loading
             public Data Data;
         }
 
-        private IScreen _screen;
+        private IWindow _window;
         private Ctx _ctx;
 
         public Entity(Ctx ctx)
@@ -24,21 +25,21 @@ namespace CyberBulletRun.Loading
 
         public async UniTask Init() 
         {
-            var asset = await Cacher.GetBundle("main", _ctx.Data.ScreenName);
+            var asset = await Cacher.GetBundleAsync("main", _ctx.Data.ScreenName);
             var go = GameObject.Instantiate(asset as GameObject);
-            _screen = go.GetComponent<IScreen>();
+            _window = go.GetComponent<IWindow>();
         }
 
-        public void ShowImmediate() => _screen.ShowImmediate();
-        public void HideImmediate() => _screen.HideImmediate();
+        public void ShowImmediate() => _window.ShowImmediate();
+        public void HideImmediate() => _window.HideImmediate();
 
-        public async UniTask Show() => await _screen.Show();
-        public async UniTask Hide() => await _screen.Hide();
+        public async UniTask Show() => await _window.Show();
+        public async UniTask Hide() => await _window.Hide();
         
         protected override void OnDispose()
         {
             base.OnDispose();
-            _screen.Release();
+            _window.Release();
         }
     }
 }

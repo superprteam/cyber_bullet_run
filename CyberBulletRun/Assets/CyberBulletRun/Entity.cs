@@ -49,6 +49,8 @@ namespace CyberBulletRun
 
             await _loading.Hide();
 
+            _loading.Dispose();
+            
             return mainScreen;
         }
         

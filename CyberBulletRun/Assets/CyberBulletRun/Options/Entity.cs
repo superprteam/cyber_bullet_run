@@ -4,6 +4,7 @@ using Shared.LocalCache;
 using Shared.Requests;
 using System;
 using CyberBulletRun.Options.View;
+using Shared.UI;
 using UnityEngine;
 
 namespace CyberBulletRun.Options 
@@ -15,7 +16,7 @@ namespace CyberBulletRun.Options
             public Data Data;
         }
 
-        private IScreen _screen;
+        private IWindow _window;
         private readonly Ctx _ctx;
 
         private Action _onHide;
@@ -27,27 +28,27 @@ namespace CyberBulletRun.Options
 
         public async UniTask Init(Action hideCallback) {
             _onHide = hideCallback;
-            var asset = await Cacher.GetBundle("main", _ctx.Data.ScreenName);
+            var asset = await Cacher.GetBundleAsync("main", _ctx.Data.ScreenName);
             var go = GameObject.Instantiate(asset as GameObject);
-            _screen = go.GetComponent<IScreen>();
-            _screen.Init(_onHide);
+            _window = go.GetComponent<IWindow>();
+            _window.SetOnHideCallback(_onHide);
         }
 
-        public void ShowImmediate() => _screen.ShowImmediate();
+        public void ShowImmediate() => _window.ShowImmediate();
         public void HideImmediate() {
-            _screen.HideImmediate();
+            _window.HideImmediate();
             _onHide?.Invoke();
         }
 
-        public async UniTask Show() => await _screen.Show();
+        public async UniTask Show() => await _window.Show();
         public async UniTask Hide() {
-            await _screen.Hide();
+            await _window.Hide();
             _onHide?.Invoke();
         }
 
         protected override void OnDispose()
         {
-            _screen.Release();
+            _window.Release();
         }
     }
 }

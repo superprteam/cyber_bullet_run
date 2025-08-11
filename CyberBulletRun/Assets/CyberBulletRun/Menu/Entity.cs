@@ -5,7 +5,9 @@ using Shared.Requests;
 using System;
 using System.Collections.Generic;
 using CyberBulletRun.Menu.View;
+using Shared.UI;
 using UnityEngine;
+using Screen = CyberBulletRun.Menu.View.Screen;
 
 namespace CyberBulletRun.Menu 
 {
@@ -16,7 +18,7 @@ namespace CyberBulletRun.Menu
             public Data Data;
         }
 
-        private IScreen _screen;
+        private IWindow _window;
         private readonly Ctx _ctx;
         private Action<string> _onButtonClick;
 
@@ -27,20 +29,20 @@ namespace CyberBulletRun.Menu
 
         public async UniTask Init(Action<string> OnButtonClick) {
             _onButtonClick = OnButtonClick;
-            var asset = await Cacher.GetBundle("main", _ctx.Data.ScreenName);
+            var asset = await Cacher.GetBundleAsync("main", _ctx.Data.ScreenName);
             var go = GameObject.Instantiate(asset as GameObject);
-            _screen = go.GetComponent<IScreen>();
-            _screen.Init(_onButtonClick);
+            _window = go.GetComponent<IWindow>();
+            ((Screen)_window).Init(_onButtonClick);
         }
 
-        public async UniTask Show() => await _screen.Show();
-        public void HideImmediate() => _screen.HideImmediate();
+        public async UniTask Show() => await _window.Show();
+        public void HideImmediate() => _window.HideImmediate();
 
         protected override void OnDispose()
         {
             base.OnDispose();
             HideImmediate();
-            _screen.Release();
+            _window.Release();
         }
     }
 }

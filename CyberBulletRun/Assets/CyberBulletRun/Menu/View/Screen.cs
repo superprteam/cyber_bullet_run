@@ -5,28 +5,22 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
+using Shared.UI;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace CyberBulletRun.Menu.View 
 {
-    public interface IScreen
+    public sealed class Screen : BaseWindow
     {
-        public UniTask Show();
-        public void HideImmediate();
-        public void Release();
-        public void Init(Action<string> onButtonClick);
-    }
-
-    public sealed class Screen : MonoBehaviour, IScreen
-    {
-        [SerializeField] private CanvasGroup _canvasGroup;
         [SerializeField] private Button _gameButton; 
         [SerializeField] private Button _shopButton; 
         [SerializeField] private Button _optionsButton; 
 
         private readonly Stack<GameObject> _objects = new ();
         private Action<string> _onButtonClick;
+
+        private Tween _canvasGroupTween;
 
         public void Init(Action<string> onButtonClick) {
             _onButtonClick = onButtonClick;
@@ -49,21 +43,17 @@ namespace CyberBulletRun.Menu.View
             _onButtonClick("options");
         }
 
-        public async UniTask Show()
+        public override async UniTask Show()
         {
             _canvasGroup.alpha = 0f;
             _canvasGroup.gameObject.SetActive(true);
-            _canvasGroup.DOFade(1, 0.5f);
+            _canvasGroupTween?.Kill();
+            _canvasGroupTween =  _canvasGroup.DOFade(1, 0.5f);
         }
 
-        public void HideImmediate()
+        public override void Release() 
         {
-            _canvasGroup.alpha = 0f;
-            _canvasGroup.gameObject.SetActive(false);
-        }
-
-        public void Release() 
-        {
+            _canvasGroupTween?.Kill();
             while(_objects.Count > 0) 
             {
                 GameObject.Destroy(_objects.Pop());

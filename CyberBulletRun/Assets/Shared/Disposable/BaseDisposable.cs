@@ -22,8 +22,8 @@ namespace Shared.Disposable
         private readonly Stack<IDisposable> _disposables = new ();
         public bool IsDisposed = false;
 
-        public void Dispose()
-        {
+        public void Dispose() {
+            if (IsDisposed) return;
             while (_disposables.Count > 0)
                 _disposables.Pop().Dispose();
             IsDisposed = true;
