@@ -6,8 +6,8 @@ namespace Shared.UI {
     public abstract class BaseWindow : MonoBehaviour, IWindow {
 
         [SerializeField] protected CanvasGroup _canvasGroup;
-        
-        private Action _onHide;
+
+        protected Action _onHide;
         
         public virtual void ShowImmediate() {
             _canvasGroup.alpha = 1f;
@@ -17,7 +17,6 @@ namespace Shared.UI {
         public virtual void HideImmediate() {
             _canvasGroup.alpha = 0f;
             _canvasGroup.gameObject.SetActive(false);
-            _onHide?.Invoke();
         }
 
         public virtual async UniTask Show() {
@@ -28,10 +27,9 @@ namespace Shared.UI {
         public virtual async UniTask Hide() {
             _canvasGroup.alpha = 0f;
             _canvasGroup.gameObject.SetActive(false);
-            _onHide?.Invoke();
         }
 
-        public virtual void SetOnHideCallback(Action onHideCallback) {
+        public virtual void SetOnHide(Action onHideCallback) {
             _onHide = onHideCallback;
         }
 

@@ -4,7 +4,7 @@ using Shared.UI;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace CyberBulletRun.Options.View 
+namespace CyberBulletRun.Shop.View 
 {
     public class Screen : BaseWindow
     {

@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using CyberBulletRun.Menu.View;
 using Shared.UI;
+using UniRx;
 using UnityEngine;
 using Screen = CyberBulletRun.Menu.View.Screen;
 
@@ -16,23 +17,26 @@ namespace CyberBulletRun.Menu
         public struct Ctx
         {
             public Data Data;
+            public ReactiveCommand<string> ShowWindow;
+            public ReactiveCommand<string> HideWindow;
+            public string GameScreenName;
+            public string ShopScreenName;
+            public string OptionsScreenName;
         }
 
         private IWindow _window;
         private readonly Ctx _ctx;
-        private Action<string> _onButtonClick;
 
         public Entity(Ctx ctx)
         {
             _ctx = ctx;
         }
 
-        public async UniTask Init(Action<string> OnButtonClick) {
-            _onButtonClick = OnButtonClick;
+        public async UniTask Init() {
             var asset = await Cacher.GetBundleAsync("main", _ctx.Data.ScreenName);
             var go = GameObject.Instantiate(asset as GameObject);
             _window = go.GetComponent<IWindow>();
-            ((Screen)_window).Init(_onButtonClick);
+            ((Screen)_window).Init(_ctx.ShowWindow, _ctx.GameScreenName, _ctx.ShopScreenName, _ctx.OptionsScreenName);
         }
 
         public async UniTask Show() => await _window.Show();

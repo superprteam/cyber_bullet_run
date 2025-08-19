@@ -342,6 +342,10 @@ MonoBehaviour:
       _screenName: FaderCanvas
     _menuData:
       _screenName: MenuCanvas
+    _gameData:
+      _screenName: GameCanvas
+    _shopData:
+      _screenName: ShopCanvas
     _optionsData:
       _screenName: OptionsCanvas
 --- !u!4 &404478306

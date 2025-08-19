@@ -9,7 +9,7 @@ namespace Shared.UI {
         public void HideImmediate();
         public UniTask Show();
         public UniTask Hide();
-        public void SetOnHideCallback(Action onHideCallback);
+        public void SetOnHide(Action onHideCallback);
         public void Release();
     }
 }

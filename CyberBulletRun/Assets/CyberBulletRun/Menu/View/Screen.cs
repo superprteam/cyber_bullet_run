@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
 using Shared.UI;
+using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -18,12 +19,20 @@ namespace CyberBulletRun.Menu.View
         [SerializeField] private Button _optionsButton; 
 
         private readonly Stack<GameObject> _objects = new ();
-        private Action<string> _onButtonClick;
 
         private Tween _canvasGroupTween;
 
-        public void Init(Action<string> onButtonClick) {
-            _onButtonClick = onButtonClick;
+        private ReactiveCommand<string> _showWindow;
+        private string _gameScreenName;
+        private string _shopScreenName;
+        private string _optionsScreenName;
+
+        public void Init(ReactiveCommand<string> showWindow, string gameScreenName, string shopScreenName, string optionsScreenName) {
+
+            _showWindow = showWindow;
+            _gameScreenName = gameScreenName;
+            _shopScreenName = shopScreenName;
+            _optionsScreenName = optionsScreenName;
             
             _gameButton.onClick.RemoveAllListeners();
             _gameButton.onClick.AddListener(OnGameClick);
@@ -34,13 +43,13 @@ namespace CyberBulletRun.Menu.View
         }
 
         private void OnGameClick() {
-            _onButtonClick("game");
+            _showWindow?.Execute(_gameScreenName);
         }
         private void OnShopClick() {
-            _onButtonClick("shop");
+            _showWindow?.Execute(_shopScreenName);
         }
         private void OnOptionsClick() {
-            _onButtonClick("options");
+            _showWindow?.Execute(_optionsScreenName);
         }
 
         public override async UniTask Show()
