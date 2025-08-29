@@ -1,3 +1,4 @@
+using CyberBulletRun.Game.View;
 using Cysharp.Threading.Tasks;
 using Shared.Disposable;
 using Shared.LocalCache;
@@ -17,8 +18,11 @@ namespace CyberBulletRun.Game
         }
 
         private IWindow _window;
+        private LevelView _levelView;
+        private CameraController _cameraController;
         private readonly Ctx _ctx;
-
+        private ReactiveProperty<Stair> _currentStair;
+        
         public Entity(Ctx ctx)
         {
             _ctx = ctx;
@@ -31,6 +35,22 @@ namespace CyberBulletRun.Game
             _window.SetOnHide(async () => {
                 await Hide();
             });
+
+            _currentStair = new ReactiveProperty<Stair>();
+
+            _cameraController = new CameraController(new CameraController.Ctx {
+                CameraScreen = Camera.main,
+                CurrentStair = _currentStair,
+                Root = go,
+            });
+            
+            _levelView = new LevelView(new LevelView.Ctx {
+                Root = go,
+                LevelNumber = 1,
+                CurrentStair = _currentStair,
+            }).AddTo(this);
+
+            await _levelView.GenerateLevel();
         }
 
         public void ShowImmediate() => _window.ShowImmediate();

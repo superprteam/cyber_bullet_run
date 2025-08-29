@@ -40,6 +40,7 @@ namespace CyberBulletRun.Menu
         }
 
         public async UniTask Show() => await _window.Show();
+        public async UniTask Hide() => await _window.Hide();
         public void HideImmediate() => _window.HideImmediate();
 
         protected override void OnDispose()

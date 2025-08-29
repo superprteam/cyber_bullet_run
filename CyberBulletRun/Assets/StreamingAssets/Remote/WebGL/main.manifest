@@ -1,25 +1,35 @@
 ManifestFileVersion: 0
 UnityVersion: 6000.0.54f1
-CRC: 1896769697
+CRC: 92578370
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 6470e6c443ade432dc0417dd377dd4e8
+    Hash: 8e90626adf2f1e0514d0b2e17512cfaf
   TypeTreeHash:
     serializedVersion: 2
-    Hash: ec47cdc8e30cb9d18e0fb9a3cc3fc9d3
+    Hash: d501599b39397b45c50e99d961417563
   IncrementalBuildHash:
     serializedVersion: 2
-    Hash: fc1bb43d7136839daa378ab50535dd78
+    Hash: 7d8aed9dd68e7f94b00345318cc4e5e8
 HashAppended: 0
 ClassTypes:
 - Class: 1
   Script: {instanceID: 0}
+- Class: 4
+  Script: {instanceID: 0}
 - Class: 21
+  Script: {instanceID: 0}
+- Class: 23
   Script: {instanceID: 0}
 - Class: 28
   Script: {instanceID: 0}
+- Class: 33
+  Script: {instanceID: 0}
+- Class: 43
+  Script: {instanceID: 0}
 - Class: 48
+  Script: {instanceID: 0}
+- Class: 65
   Script: {instanceID: 0}
 - Class: 114
   Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
@@ -27,6 +37,8 @@ ClassTypes:
   Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 88d71805fd3278d49b2c7a5a2849076e, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: 59f8146938fff824cb5fd77236b75775, type: 3}
 - Class: 114
@@ -36,6 +48,8 @@ ClassTypes:
 - Class: 114
   Script: {fileID: 11500000, guid: a003718ec2ae62241b4e88538a81fb6f, type: 3}
 - Class: 114
+  Script: {fileID: 11500000, guid: e9c93b34646201d4ab0a01f519d1662f, type: 3}
+- Class: 114
   Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: 9e47fcc9bc57cb449a38553115e3d252, type: 3}
@@ -43,6 +57,8 @@ ClassTypes:
   Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: 71c1514a6bd24e1e882cebbe1904ce04, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 2a0aef4f5dc0f9749ba4c32224580b61, type: 3}
 - Class: 115
   Script: {instanceID: 0}
 - Class: 128
@@ -103,8 +119,12 @@ SerializeReferenceClassIdentifiers:
 - AssemblyName: UnityEngine.UI
   ClassName: UnityEngine.UI.SpriteState
 Assets:
+- Assets/Remote/Main/ShopCanvas/ShopCanvas.prefab
+- Assets/Remote/Main/GameCanvas/GameCanvas.prefab
+- Assets/Remote/Main/GameCanvas/Stairs/Stair1.prefab
 - Assets/Remote/Main/OptionsCanvas/OptionsCanvas.prefab
 - Assets/Remote/Main/MenuCanvas/MenuCanvas.prefab
 - Assets/Remote/Main/FaderCanvas/FaderCanvas.prefab
+- Assets/Remote/Main/GameCanvas/Stairs/Stair2.prefab
 - Assets/Remote/Main/MenuCanvas/Images/Background.png
 Dependencies: []

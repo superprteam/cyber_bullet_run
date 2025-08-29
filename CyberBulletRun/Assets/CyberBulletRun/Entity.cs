@@ -15,9 +15,6 @@ namespace CyberBulletRun
             public Data Data;
         }
 
-        private Loading.Entity _loading;
-        private Menu.Entity _menu;
-        private BaseDisposable _lastWindow;
         private readonly Ctx _ctx;
         private UIManager _uiManager;
 
@@ -29,7 +26,7 @@ namespace CyberBulletRun
         public async UniTask AsyncProcess() {
             
             _uiManager = new UIManager(new UIManager.Ctx {
-                Data = new Managers.Data {
+                Data = new Managers.UIManager.Data {
                     LoadingData = _ctx.Data.LoadingData,
                     MenuData = _ctx.Data.MenuData,
                     GameData = _ctx.Data.GameData,

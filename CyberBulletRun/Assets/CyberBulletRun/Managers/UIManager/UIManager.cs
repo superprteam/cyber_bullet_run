@@ -1,10 +1,11 @@
+using System;
 using Cysharp.Threading.Tasks;
 using Shared.Disposable;
 using UnityEngine;
 using UniRx;
 
 namespace CyberBulletRun.Managers.UIManager {
-    public class UIManager {
+    public class UIManager : IDisposable {
         
         public struct Ctx
         {
@@ -58,6 +59,7 @@ namespace CyberBulletRun.Managers.UIManager {
                 _lastWindow = gameScreen;
                 
                 await gameScreen.Init();
+                await _mainScreen.Hide();
                 await gameScreen.Show();
             } else if (windowName.Equals(_ctx.Data.ShopData.ScreenName)) {
                 var shopScreen = new Shop.Entity(new Shop.Entity.Ctx {
@@ -135,7 +137,7 @@ namespace CyberBulletRun.Managers.UIManager {
             }
         }
 
-        public void Release()
+        public void Dispose()
         {
             _disposables.Dispose();
         }        
