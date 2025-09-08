@@ -5,6 +5,7 @@ using System.Reflection;
 using CyberBulletRun.Game.View;
 using Cysharp.Threading.Tasks;
 using Newtonsoft.Json;
+using PlasticGui;
 using Shared.Disposable;
 using Shared.LocalCache;
 using Shared.UI;
@@ -15,7 +16,7 @@ using Screen = UnityEngine.Screen;
 
 namespace CyberBulletRun.Game
 {
-    internal partial class LevelView : BaseDisposable
+    internal partial class LevelGenerate : BaseDisposable
     {
         public struct Ctx
         {
@@ -27,8 +28,9 @@ namespace CyberBulletRun.Game
         private readonly Ctx _ctx;
         private LevelData _levelData;
         private Dictionary<string, Stair> _stairPrefabs;
+        private List<Stair> _stairs;
 
-        public LevelView(Ctx ctx)
+        public LevelGenerate(Ctx ctx)
         {
             _ctx = ctx;
         }
@@ -49,13 +51,16 @@ namespace CyberBulletRun.Game
 
             var rand = new Random();
             Transform previousTop = null;
+            _stairs = new List<Stair>();
             Stair firstStair = null;
             for (int i = 0; i < _levelData.Length; i++)
             {
                 var prefabKey = _stairPrefabs.Keys.ToList()[rand.Next(_stairPrefabs.Count)]; 
                 var prefab = _stairPrefabs[prefabKey];
                 var stair = GameObject.Instantiate(prefab, _ctx.Root.transform);
+                
                 stair.AddTo(this);
+                _stairs.Add(stair);
                 if (i == 0) {
                     firstStair = stair;
                 }
@@ -74,7 +79,18 @@ namespace CyberBulletRun.Game
                 previousTop = stair.LinkPointUp;
             }
 
+            await BakeNavMesh();
+            
             _ctx.CurrentStair.Value = firstStair;
+        }
+
+        private async UniTask BakeNavMesh() {
+            await UniTask.NextFrame();
+            foreach(var stair in _stairs) {
+                foreach (var surface in stair.NavMeshSurfaces) {
+                    surface.BuildNavMesh();
+                }
+            }
         }
     }
 }

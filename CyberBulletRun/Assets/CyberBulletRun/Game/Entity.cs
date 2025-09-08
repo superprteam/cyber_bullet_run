@@ -18,7 +18,7 @@ namespace CyberBulletRun.Game
         }
 
         private IWindow _window;
-        private LevelView _levelView;
+        private LevelGenerate _levelGenerate;
         private CameraController _cameraController;
         private readonly Ctx _ctx;
         private ReactiveProperty<Stair> _currentStair;
@@ -44,13 +44,13 @@ namespace CyberBulletRun.Game
                 Root = go,
             });
             
-            _levelView = new LevelView(new LevelView.Ctx {
+            _levelGenerate = new LevelGenerate(new LevelGenerate.Ctx {
                 Root = go,
                 LevelNumber = 1,
                 CurrentStair = _currentStair,
             }).AddTo(this);
 
-            await _levelView.GenerateLevel();
+            await _levelGenerate.GenerateLevel();
         }
 
         public void ShowImmediate() => _window.ShowImmediate();
