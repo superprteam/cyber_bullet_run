@@ -5,6 +5,7 @@ namespace CyberBulletRun.Game {
     [Serializable]
     public class LevelData {
         public List<string> Prefabs;
+        public string StartPlatform;
         public int Length;
     }
 }

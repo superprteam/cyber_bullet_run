@@ -5,7 +5,6 @@ using System.Reflection;
 using CyberBulletRun.Game.View;
 using Cysharp.Threading.Tasks;
 using Newtonsoft.Json;
-using PlasticGui;
 using Shared.Disposable;
 using Shared.LocalCache;
 using Shared.UI;
@@ -28,6 +27,7 @@ namespace CyberBulletRun.Game
         private readonly Ctx _ctx;
         private LevelData _levelData;
         private Dictionary<string, Stair> _stairPrefabs;
+        private Stair _startPlatform;
         private List<Stair> _stairs;
 
         public LevelGenerate(Ctx ctx)
@@ -37,6 +37,7 @@ namespace CyberBulletRun.Game
 
         public async UniTask GenerateLevel()
         {
+            _stairs = new List<Stair>();
             var levelPath = $"Level{_ctx.LevelNumber}/Level.json";
             var levelText = await Cacher.GetTextAsync(levelPath);
             _levelData = JsonConvert.DeserializeObject<LevelData>(levelText);
@@ -47,12 +48,20 @@ namespace CyberBulletRun.Game
                 _stairPrefabs.Add(stairName, stair.GetComponent<Stair>());
             }
 
+            var startPlatformPrefab = await Cacher.GetBundleAsync("main", _levelData.StartPlatform) as GameObject;
+            
             Debug.Log("Generate: " + _levelData.Length + ", " + _stairPrefabs.Count);
 
             var rand = new Random();
             Transform previousTop = null;
-            _stairs = new List<Stair>();
-            Stair firstStair = null;
+            // StartPlatform
+            _startPlatform = GameObject.Instantiate(startPlatformPrefab, _ctx.Root.transform).GetComponent<Stair>();
+            previousTop = _startPlatform.LinkPointUp;
+
+            _startPlatform.AddTo(this);
+            _stairs.Add(_startPlatform);
+            
+            // Stairs
             for (int i = 0; i < _levelData.Length; i++)
             {
                 var prefabKey = _stairPrefabs.Keys.ToList()[rand.Next(_stairPrefabs.Count)]; 
@@ -61,9 +70,6 @@ namespace CyberBulletRun.Game
                 
                 stair.AddTo(this);
                 _stairs.Add(stair);
-                if (i == 0) {
-                    firstStair = stair;
-                }
                 
                 if (i % 2 == 1)
                 {
@@ -80,17 +86,35 @@ namespace CyberBulletRun.Game
             }
 
             await BakeNavMesh();
+
+            await UniTask.NextFrame();
             
-            _ctx.CurrentStair.Value = firstStair;
+            _ctx.CurrentStair.Value = _startPlatform;
         }
 
         private async UniTask BakeNavMesh() {
             await UniTask.NextFrame();
+            
+            foreach (var surface in _startPlatform.NavMeshSurfaces) {
+                surface.BuildNavMesh();
+            }
+            
             foreach(var stair in _stairs) {
                 foreach (var surface in stair.NavMeshSurfaces) {
                     surface.BuildNavMesh();
                 }
             }
+        }
+
+        public Stair GetStair(int index) {
+            if (index >= _stairs.Count) {
+                return null;
+            }
+            return _stairs[index];
+        }
+
+        public List<Stair> GetStair() {
+            return _stairs;
         }
     }
 }

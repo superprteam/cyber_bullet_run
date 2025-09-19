@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &2857936674013353360
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 275776364486240666}
+  m_Layer: 0
+  m_Name: StopPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &275776364486240666
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2857936674013353360}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.995, y: 1.0754, z: 2.145}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5049789396642299941}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3260164725169689826
 GameObject:
   m_ObjectHideFlags: 0
@@ -377,6 +408,7 @@ Transform:
   - {fileID: 5437016014175840907}
   - {fileID: 1620417206994777712}
   - {fileID: 7884095120128060502}
+  - {fileID: 275776364486240666}
   - {fileID: 8586163872006101236}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -394,6 +426,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _linkPointDown: {fileID: 1620417206994777712}
   _linkPointUp: {fileID: 7884095120128060502}
+  _stopPoint: {fileID: 275776364486240666}
   _cameraPos: {fileID: 8586163872006101236}
   _navMeshSurfaces:
   - {fileID: 3499431804656320879}

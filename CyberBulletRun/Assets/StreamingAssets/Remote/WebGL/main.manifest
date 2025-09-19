@@ -1,16 +1,16 @@
 ManifestFileVersion: 0
 UnityVersion: 6000.0.54f1
-CRC: 3100088987
+CRC: 4015622155
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 19be99fb75b0ca28bf90a0a2718052ed
+    Hash: 6fa40ef5482f5bd5053c8a69fb0b3574
   TypeTreeHash:
     serializedVersion: 2
-    Hash: d5718b85071681ae6e38a1f52104e68d
+    Hash: 8695258a8722560f25ab672ca8b625a1
   IncrementalBuildHash:
     serializedVersion: 2
-    Hash: 400d5c06b0b4ac49077fcea08928ed46
+    Hash: 6791462398c00913c4769ffc653b414e
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -50,20 +50,26 @@ ClassTypes:
 - Class: 114
   Script: {fileID: 11500000, guid: e9c93b34646201d4ab0a01f519d1662f, type: 3}
 - Class: 114
+  Script: {fileID: 11500000, guid: 9fdcda1b99759b045bca3abe293e2353, type: 3}
+- Class: 114
   Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: 9e47fcc9bc57cb449a38553115e3d252, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 7a5ac11cc976e418e8d13136b07e1f52, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: 71c1514a6bd24e1e882cebbe1904ce04, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: 2a0aef4f5dc0f9749ba4c32224580b61, type: 3}
-- Class: 114
-  Script: {fileID: 11500000, guid: 7a5ac11cc976e418e8d13136b07e1f52, type: 3}
 - Class: 115
   Script: {instanceID: 0}
 - Class: 128
+  Script: {instanceID: 0}
+- Class: 136
+  Script: {instanceID: 0}
+- Class: 195
   Script: {instanceID: 0}
 - Class: 213
   Script: {instanceID: 0}
@@ -125,6 +131,8 @@ Assets:
 - Assets/Remote/Main/GameCanvas/GameCanvas.prefab
 - Assets/Remote/Main/GameCanvas/Stairs/Stair1.prefab
 - Assets/Remote/Main/OptionsCanvas/OptionsCanvas.prefab
+- Assets/Remote/Main/GameCanvas/StartPlatform/StartPlatform1.prefab
+- Assets/Remote/Main/GameCanvas/Character.prefab
 - Assets/Remote/Main/MenuCanvas/MenuCanvas.prefab
 - Assets/Remote/Main/FaderCanvas/FaderCanvas.prefab
 - Assets/Remote/Main/GameCanvas/Stairs/Stair2.prefab
