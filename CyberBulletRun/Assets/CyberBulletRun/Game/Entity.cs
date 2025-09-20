@@ -25,7 +25,7 @@ namespace CyberBulletRun.Game
         private CameraController _cameraController;
         private readonly Ctx _ctx;
         private ReactiveProperty<Stair> _currentStair;
-        private Func<List<Stair>> GetStair;
+        private List<Stair> _stairs;
         private Character _player;
         
         public Entity(Ctx ctx)
@@ -42,15 +42,15 @@ namespace CyberBulletRun.Game
             });
 
             _currentStair = new ReactiveProperty<Stair>();
+            _stairs = new List<Stair>();
             
             _levelGenerate = new LevelGenerate(new LevelGenerate.Ctx {
                 Root = go,
                 LevelNumber = 1,
                 CurrentStair = _currentStair,
+                Stairs = _stairs,
             }).AddTo(this);
 
-            GetStair = _levelGenerate.GetStair;
-            
             // player
             var characterPrefab = await Cacher.GetBundleAsync("main", "Character");
             var playerView = GameObject.Instantiate(characterPrefab as GameObject).GetComponent<CharacterView>();
@@ -59,7 +59,7 @@ namespace CyberBulletRun.Game
             var playerController = new PlayerController(new PlayerController.PlayerControllerCtx() {
                 Data = _player.Data,
                 CurrentStair = _currentStair,
-                GetStair = GetStair,
+                Stairs = _stairs,
             });
             _player.Init(playerController, playerView);
             

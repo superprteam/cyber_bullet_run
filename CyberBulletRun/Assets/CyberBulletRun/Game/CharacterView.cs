@@ -8,10 +8,12 @@ namespace CyberBulletRun.Game {
     public class CharacterView : MonoBehaviour {
 
         [SerializeField] private NavMeshAgent _agent;
+        [SerializeField] private GameObject _root;
         public struct CharacterViewCtx {
             public CharacterData Data;
             public ReactiveCommand<MoveTo> MoveTo;
             public ReactiveCommand MoveEnd;
+            public ReactiveCommand<Vector3> TargetPos;
         }
 
         public struct MoveTo {
@@ -21,10 +23,12 @@ namespace CyberBulletRun.Game {
 
         private CharacterViewCtx _ctx;
         private bool _isMoving;
+        private Vector3 _targetPos;
         
         public void Init(CharacterViewCtx ctx) {
             _ctx = ctx;
             _ctx.MoveTo?.Subscribe(async (moveTo) => await OnMoveTo(moveTo));
+            _ctx.TargetPos?.Subscribe(async (targetPos) => await OnTargetPos(targetPos));
             _isMoving = false;
         }
 
@@ -39,6 +43,10 @@ namespace CyberBulletRun.Game {
             }
         }
 
+        private async UniTask OnTargetPos(Vector3 targetPos) {
+            _targetPos = targetPos;
+        }
+        
         void Update() {
             if (!_isMoving) {
                 return;
@@ -46,6 +54,13 @@ namespace CyberBulletRun.Game {
             if (HasArrivedOrFailed()) {
                 _ctx.MoveEnd.Execute();
             }
+            Vector3 direction = _targetPos - _root.transform.position;
+            direction.y = 0f;
+            if (direction.sqrMagnitude > 0.0001f)
+            {
+                Quaternion targetRotation = Quaternion.LookRotation(direction);
+                _root.transform.rotation = targetRotation;
+            }            
         }
         
         public bool HasArrivedOrFailed() {

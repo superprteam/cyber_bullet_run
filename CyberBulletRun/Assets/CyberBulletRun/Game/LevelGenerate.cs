@@ -22,13 +22,13 @@ namespace CyberBulletRun.Game
             public GameObject Root;
             public int LevelNumber;
             public ReactiveProperty<Stair> CurrentStair;
+            public List<Stair> Stairs;
         }
 
         private readonly Ctx _ctx;
         private LevelData _levelData;
         private Dictionary<string, Stair> _stairPrefabs;
         private Stair _startPlatform;
-        private List<Stair> _stairs;
 
         public LevelGenerate(Ctx ctx)
         {
@@ -37,7 +37,6 @@ namespace CyberBulletRun.Game
 
         public async UniTask GenerateLevel()
         {
-            _stairs = new List<Stair>();
             var levelPath = $"Level{_ctx.LevelNumber}/Level.json";
             var levelText = await Cacher.GetTextAsync(levelPath);
             _levelData = JsonConvert.DeserializeObject<LevelData>(levelText);
@@ -59,7 +58,7 @@ namespace CyberBulletRun.Game
             previousTop = _startPlatform.LinkPointUp;
 
             _startPlatform.AddTo(this);
-            _stairs.Add(_startPlatform);
+            _ctx.Stairs.Add(_startPlatform);
             
             // Stairs
             for (int i = 0; i < _levelData.Length; i++)
@@ -69,7 +68,7 @@ namespace CyberBulletRun.Game
                 var stair = GameObject.Instantiate(prefab, _ctx.Root.transform);
                 
                 stair.AddTo(this);
-                _stairs.Add(stair);
+                _ctx.Stairs.Add(stair);
                 
                 if (i % 2 == 1)
                 {
@@ -99,22 +98,11 @@ namespace CyberBulletRun.Game
                 surface.BuildNavMesh();
             }
             
-            foreach(var stair in _stairs) {
+            foreach(var stair in _ctx.Stairs) {
                 foreach (var surface in stair.NavMeshSurfaces) {
                     surface.BuildNavMesh();
                 }
             }
-        }
-
-        public Stair GetStair(int index) {
-            if (index >= _stairs.Count) {
-                return null;
-            }
-            return _stairs[index];
-        }
-
-        public List<Stair> GetStair() {
-            return _stairs;
         }
     }
 }

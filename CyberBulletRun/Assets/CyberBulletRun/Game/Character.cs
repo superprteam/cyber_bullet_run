@@ -11,6 +11,7 @@ namespace CyberBulletRun.Game {
         private IController _controller;
         private CharacterView _сharacterView;
         private ReactiveCommand<CharacterView.MoveTo> MoveTo;
+        private ReactiveCommand<Vector3> TargetPos;
         private ReactiveCommand MoveEnd;
 
 
@@ -23,13 +24,15 @@ namespace CyberBulletRun.Game {
             _сharacterView = characterView;
             
             MoveTo = new ReactiveCommand<CharacterView.MoveTo>();
+            TargetPos = new ReactiveCommand<Vector3>();
             MoveEnd = new ReactiveCommand(); 
 
-            _controller.SetCommands(MoveTo, MoveEnd);
+            _controller.SetCommands(MoveTo, MoveEnd, TargetPos);
             _сharacterView.Init(new CharacterView.CharacterViewCtx() {
                 Data = Data,
                 MoveTo = MoveTo,
                 MoveEnd = MoveEnd,
+                TargetPos = TargetPos, 
             });
         }
         

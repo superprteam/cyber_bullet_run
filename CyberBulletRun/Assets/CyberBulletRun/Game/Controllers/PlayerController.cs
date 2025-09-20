@@ -12,12 +12,13 @@ namespace CyberBulletRun.Game.Controllers {
         public struct PlayerControllerCtx {
             public CharacterData Data;
             public ReactiveProperty<Stair> CurrentStair;
-            public Func<List<Stair>> GetStair;
+            public List<Stair> Stairs;
         }
 
         private PlayerControllerCtx _ctx;
         private bool _noAnimation;
         private ReactiveCommand<CharacterView.MoveTo> _moveTo;
+        private ReactiveCommand<Vector3> _targetPos;
         private ReactiveCommand<Unit> _moveEnd;
         
         public PlayerController(PlayerControllerCtx ctx) {
@@ -52,20 +53,25 @@ namespace CyberBulletRun.Game.Controllers {
             
         }
 
-        public void SetCommands(ReactiveCommand<CharacterView.MoveTo> moveTo, ReactiveCommand moveEnd) {
+        public void SetCommands(ReactiveCommand<CharacterView.MoveTo> moveTo, ReactiveCommand moveEnd, ReactiveCommand<Vector3> targetPos) {
             _moveTo = moveTo;
             _moveEnd = moveEnd;
+            _targetPos = targetPos;
+            
             _moveEnd.Subscribe(async (Unit) => await OnMoveEnd());
         }
 
         private async UniTask<Unit> OnMoveEnd() {
             await UniTask.WaitForSeconds(1);
-            var stairs = _ctx.GetStair();
-            for(int i=0; i < stairs.Count; i++) {
-                if (stairs[i] == _ctx.CurrentStair.Value) {
-                    if (i + 1 < stairs.Count) {
-                        _ctx.CurrentStair.Value = stairs[i + 1];
+            for(int i=0; i < _ctx.Stairs.Count; i++) {
+                if (_ctx.Stairs[i] == _ctx.CurrentStair.Value) {
+                    if (i + 1 < _ctx.Stairs.Count) {
+                        _ctx.CurrentStair.Value = _ctx.Stairs[i + 1];
                         Debug.Log("Current Stair: " + (i+1));
+
+                        if (i + 2 < _ctx.Stairs.Count) {
+                            _targetPos.Execute(_ctx.Stairs[i + 2].EnemyPoint.position);
+                        }
                     }
 
                     break;
