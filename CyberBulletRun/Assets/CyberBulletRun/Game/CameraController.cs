@@ -33,12 +33,14 @@ namespace CyberBulletRun.Game
             }
             
             _moveCameraSequence?.Kill();
+
+            var cameraPos = stair.GetCameraPos(); 
             
-            Vector3 direction = stair.LinkPointUp.position - stair.CameraPos.position;
+            Vector3 direction = stair.LinkPointUp.position - cameraPos;
             Quaternion targetRotation = Quaternion.LookRotation(direction);
 
             _moveCameraSequence = DOTween.Sequence();
-            _moveCameraSequence.Append(_ctx.CameraScreen.transform.DOMove(stair.CameraPos.position, 0.5f));
+            _moveCameraSequence.Append(_ctx.CameraScreen.transform.DOMove(cameraPos, 0.5f));
             _moveCameraSequence.Join(_ctx.CameraScreen.transform.DORotateQuaternion(targetRotation, 0.5f));
             _moveCameraSequence.Play();
         }

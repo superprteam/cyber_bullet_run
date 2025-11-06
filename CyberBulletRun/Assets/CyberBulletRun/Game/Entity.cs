@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using CyberBulletRun.Game.Controllers;
 using CyberBulletRun.Game.View;
 using Cysharp.Threading.Tasks;
+using Newtonsoft.Json;
 using Shared.Disposable;
 using Shared.LocalCache;
 using Shared.UI;
@@ -22,11 +23,16 @@ namespace CyberBulletRun.Game
 
         private IWindow _window;
         private LevelGenerate _levelGenerate;
+        private ShotSpawner _shotSpawner;
+        private EnemySpawner _enemySpawner;
         private CameraController _cameraController;
         private readonly Ctx _ctx;
         private ReactiveProperty<Stair> _currentStair;
         private List<Stair> _stairs;
         private Character _player;
+        private LevelData _levelData;
+        private ReactiveCommand<Shot> _shotSpawn;
+        private ReactiveCommand<ShotSpawner.ShotCollision> _shotCollision;
         
         public Entity(Ctx ctx)
         {
@@ -35,42 +41,81 @@ namespace CyberBulletRun.Game
 
         public async UniTask Init() {
             var asset = await Cacher.GetBundleAsync("main", _ctx.Data.ScreenName);
-            var go = GameObject.Instantiate(asset as GameObject);
-            _window = go.GetComponent<IWindow>();
+            var window = GameObject.Instantiate(asset as GameObject);
+            _window = window.GetComponent<IWindow>();
             _window.SetOnHide(async () => {
                 await Hide();
             });
 
+            int levelNumber = 1;
+            
+            var levelPath = $"Level{levelNumber}/Level.json";
+            var levelText = await Cacher.GetTextAsync(levelPath);
+            _levelData = JsonConvert.DeserializeObject<LevelData>(levelText);
+            
+            
             _currentStair = new ReactiveProperty<Stair>();
             _stairs = new List<Stair>();
+            _shotSpawn = new ReactiveCommand<Shot>();
+            _shotCollision = new ReactiveCommand<ShotSpawner.ShotCollision>();
             
             _levelGenerate = new LevelGenerate(new LevelGenerate.Ctx {
-                Root = go,
-                LevelNumber = 1,
+                Root = window,
+                LevelData = _levelData,
                 CurrentStair = _currentStair,
                 Stairs = _stairs,
             }).AddTo(this);
 
-            // player
-            var characterPrefab = await Cacher.GetBundleAsync("main", "Character");
-            var playerView = GameObject.Instantiate(characterPrefab as GameObject).GetComponent<CharacterView>();
-            
-            _player = new Character(new CharacterData());
-            var playerController = new PlayerController(new PlayerController.PlayerControllerCtx() {
-                Data = _player.Data,
+            // enemy
+            var enemyController = new AIController(new AIController.AIControllerCtx() {
                 CurrentStair = _currentStair,
                 Stairs = _stairs,
             });
-            _player.Init(playerController, playerView);
+            
+            _enemySpawner = new EnemySpawner(new EnemySpawner.Ctx {
+                Root = window,
+                CurrentStair = _currentStair,
+                Stairs = _stairs,
+                Controller = enemyController,
+                ShotCollision = _shotCollision,
+            }).AddTo(this);
+            
+            // player
+            var characterPrefab = await Cacher.GetBundleAsync("main", "Character");
+            var playerView = GameObject.Instantiate(characterPrefab as GameObject, window.transform).GetComponent<CharacterView>();
+            
+            _player = new Character(new CharacterData() {
+                HP = 1,
+                SkinId = 1,
+                WeaponId = 1,
+            });
+            var playerController = new PlayerController(new PlayerController.PlayerControllerCtx() {
+                Character = _player,
+                CurrentStair = _currentStair,
+                Stairs = _stairs,
+            });
+            await _player.Init(playerController, playerView, _shotSpawn);
             
             // stairs
             _cameraController = new CameraController(new CameraController.Ctx {
                 CameraScreen = Camera.allCameras[0],
                 CurrentStair = _currentStair,
-                Root = go,
+                Root = window,
+            });
+
+            _shotSpawner = new ShotSpawner(new ShotSpawner.Ctx() {
+                Root = window,
+                ShotSpawn = _shotSpawn,
+                ShotCollision = _shotCollision,
             });
             
             await _levelGenerate.GenerateLevel();
+            
+            Observable.EveryUpdate().Subscribe(_ => {
+                    playerController.Update();
+                    enemyController.Update();
+                    _shotSpawner.Update();
+            }).AddTo(this);
         }
 
         public void ShowImmediate() => _window.ShowImmediate();

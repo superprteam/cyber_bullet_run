@@ -1,19 +1,24 @@
+using System;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using UniRx;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Serialization;
 
 namespace CyberBulletRun.Game {
-    public class CharacterView : MonoBehaviour {
+    public class CharacterView : MonoBehaviour, IDisposable {
 
         [SerializeField] private NavMeshAgent _agent;
-        [SerializeField] private GameObject _root;
+        [SerializeField] private GameObject _body;
+        [SerializeField] private GameObject _weapon;
+        [SerializeField] private Transform _weaponFire;
         public struct CharacterViewCtx {
             public CharacterData Data;
             public ReactiveCommand<MoveTo> MoveTo;
             public ReactiveCommand MoveEnd;
             public ReactiveCommand<Vector3> TargetPos;
+            public ReactiveProperty<Transform> WeaponFire;
         }
 
         public struct MoveTo {
@@ -30,6 +35,7 @@ namespace CyberBulletRun.Game {
             _ctx.MoveTo?.Subscribe(async (moveTo) => await OnMoveTo(moveTo));
             _ctx.TargetPos?.Subscribe(async (targetPos) => await OnTargetPos(targetPos));
             _isMoving = false;
+            _ctx.WeaponFire.Value = _weaponFire;
         }
 
         private async UniTask OnMoveTo(MoveTo moveTo) {
@@ -54,13 +60,23 @@ namespace CyberBulletRun.Game {
             if (HasArrivedOrFailed()) {
                 _ctx.MoveEnd.Execute();
             }
-            Vector3 direction = _targetPos - _root.transform.position;
+            
+            // body rotation
+            Vector3 direction = _targetPos - _body.transform.position;
             direction.y = 0f;
             if (direction.sqrMagnitude > 0.0001f)
             {
                 Quaternion targetRotation = Quaternion.LookRotation(direction);
-                _root.transform.rotation = targetRotation;
-            }            
+                _body.transform.rotation = targetRotation;
+            }
+            
+            // weapon rotation
+            direction = _weapon.transform.parent.InverseTransformPoint(_targetPos) - _weapon.transform.localPosition;
+            if (direction.sqrMagnitude > 0.0001f)
+            {
+                _weapon.transform.localRotation = Quaternion.LookRotation(direction, Vector3.up);
+            }
+            
         }
         
         public bool HasArrivedOrFailed() {
@@ -78,6 +94,10 @@ namespace CyberBulletRun.Game {
                 }
             }
             return false;
-        }        
+        }
+
+        public void Dispose() {
+            Destroy(gameObject);
+        }
     }
 }

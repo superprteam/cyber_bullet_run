@@ -31,6 +31,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 5049789396642299941}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1111404607232736666
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8491583870771781008}
+  m_Layer: 0
+  m_Name: CameraPosRight
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8491583870771781008
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1111404607232736666}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -4.98, y: 1.97, z: 1.8431}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5049789396642299941}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2857936674013353360
 GameObject:
   m_ObjectHideFlags: 0
@@ -77,7 +108,7 @@ GameObject:
   - component: {fileID: 3499431804656320879}
   m_Layer: 0
   m_Name: Up
-  m_TagString: Untagged
+  m_TagString: Stair
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647
@@ -244,7 +275,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8586163872006101236}
   m_Layer: 0
-  m_Name: CameraPos
+  m_Name: CameraPosLeft
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -429,7 +460,7 @@ Transform:
   m_GameObject: {fileID: 6074443636882071647}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.079, y: 1.0754, z: 2.152}
+  m_LocalPosition: {x: 0.079, y: 1.0754, z: 1.92}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -474,6 +505,7 @@ Transform:
   - {fileID: 4816409617104458429}
   - {fileID: 275776364486240666}
   - {fileID: 8586163872006101236}
+  - {fileID: 8491583870771781008}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2056205973215563468
@@ -493,10 +525,12 @@ MonoBehaviour:
   _stopPoint: {fileID: 275776364486240666}
   _enemyPoint: {fileID: 44926877184769397}
   _enemySpawnPoint: {fileID: 4816409617104458429}
-  _cameraPos: {fileID: 8586163872006101236}
+  _cameraPosLeft: {fileID: 8586163872006101236}
+  _cameraPosRight: {fileID: 8491583870771781008}
   _navMeshSurfaces:
   - {fileID: 3499431804656320879}
   - {fileID: 5263679977787675245}
+  IsLeft: 0
 --- !u!1 &9066792987365234199
 GameObject:
   m_ObjectHideFlags: 0
@@ -512,7 +546,7 @@ GameObject:
   - component: {fileID: 5263679977787675245}
   m_Layer: 0
   m_Name: Stairs
-  m_TagString: Untagged
+  m_TagString: Stair
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647

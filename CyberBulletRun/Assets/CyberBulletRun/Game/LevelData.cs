@@ -6,6 +6,9 @@ namespace CyberBulletRun.Game {
     public class LevelData {
         public List<string> Prefabs;
         public string StartPlatform;
-        public int Length;
+        public List<string> Enemy;
+        public int Length {
+            get { return Enemy.Count; }
+        }
     }
 }

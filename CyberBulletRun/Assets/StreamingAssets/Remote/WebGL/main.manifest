@@ -1,16 +1,16 @@
 ManifestFileVersion: 0
 UnityVersion: 6000.0.54f1
-CRC: 4185807836
+CRC: 2713630477
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 14bd70c31eb3da65b8e4a4933b793dfe
+    Hash: a0bf4d36e18a01152b7f455d0deee3da
   TypeTreeHash:
     serializedVersion: 2
-    Hash: 5ab5fdeb0e04a414ccf6ff404969e7dc
+    Hash: 880338402d65a6ca4fa813af34ba36fb
   IncrementalBuildHash:
     serializedVersion: 2
-    Hash: 109a7c20380eb611c645e0a2f1e674bc
+    Hash: 10846c2182fe8739d8e89b5e32ee3039
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -28,6 +28,8 @@ ClassTypes:
 - Class: 43
   Script: {instanceID: 0}
 - Class: 48
+  Script: {instanceID: 0}
+- Class: 54
   Script: {instanceID: 0}
 - Class: 65
   Script: {instanceID: 0}
@@ -63,9 +65,13 @@ ClassTypes:
   Script: {fileID: 11500000, guid: 71c1514a6bd24e1e882cebbe1904ce04, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: 2a0aef4f5dc0f9749ba4c32224580b61, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 4c99791109a4a6d42ac93c24d0e3b9e6, type: 3}
 - Class: 115
   Script: {instanceID: 0}
 - Class: 128
+  Script: {instanceID: 0}
+- Class: 135
   Script: {instanceID: 0}
 - Class: 136
   Script: {instanceID: 0}
@@ -132,6 +138,7 @@ Assets:
 - Assets/Remote/Main/GameCanvas/Stairs/Stair1.prefab
 - Assets/Remote/Main/OptionsCanvas/OptionsCanvas.prefab
 - Assets/Remote/Main/GameCanvas/StartPlatform/StartPlatform1.prefab
+- Assets/Remote/Main/GameCanvas/Shot.prefab
 - Assets/Remote/Main/GameCanvas/Character.prefab
 - Assets/Remote/Main/MenuCanvas/MenuCanvas.prefab
 - Assets/Remote/Main/FaderCanvas/FaderCanvas.prefab

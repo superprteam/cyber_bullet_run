@@ -1,1 +1,1 @@
-{"Prefabs": ["Stair1", "Stair2"], "StartPlatform": "StartPlatform1", "Length": 9}
+{"Prefabs": ["Stair1", "Stair2"], "StartPlatform": "StartPlatform1", "Enemy": ["Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal"]}
