@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
+using DG.Tweening;
 using UniRx;
 using UnityEngine;
 using UnityEngine.AI;
@@ -29,6 +30,8 @@ namespace CyberBulletRun.Game {
         private CharacterViewCtx _ctx;
         private bool _isMoving;
         private Vector3 _targetPos;
+        private Sequence _weaponMove;
+        private Vector3 _weaponLocalPosition;
         
         public void Init(CharacterViewCtx ctx) {
             _ctx = ctx;
@@ -36,11 +39,16 @@ namespace CyberBulletRun.Game {
             _ctx.TargetPos?.Subscribe(async (targetPos) => await OnTargetPos(targetPos));
             _isMoving = false;
             _ctx.WeaponFire.Value = _weaponFire;
+            _weaponLocalPosition = _weapon.transform.localPosition;
         }
 
         private async UniTask OnMoveTo(MoveTo moveTo) {
             _isMoving = true;
+            _weaponMove.Kill(true);
+            _weaponMove = null;
             if (moveTo.IsAnimate) {
+                //_agent.isStopped = false;
+                _agent.enabled = true;
                 _agent.SetDestination(moveTo.Position);
                 Debug.Log("SetDestination: " + moveTo.Position);
             } else {
@@ -53,8 +61,33 @@ namespace CyberBulletRun.Game {
             _targetPos = targetPos;
         }
         
-        void Update() {
+        async void Update() {
             if (!_isMoving) {
+                if (_weaponMove == null && _ctx.Data.Weapon != null) {
+                    
+                    Vector3 directionBody = _targetPos - _body.transform.position;
+                    directionBody.y = 0f;
+                    Quaternion targetRotation = Quaternion.LookRotation(directionBody);
+                    _body.transform.rotation = targetRotation;
+
+                    await UniTask.NextFrame();
+                    
+                    var directionWeapon = _weapon.transform.parent.InverseTransformPoint(_targetPos) - _weapon.transform.localPosition;
+                    //var directionWeapon = _targetPos - _weapon.transform.position;
+                    _weapon.transform.localRotation = Quaternion.LookRotation(directionWeapon, Vector3.up);
+                    
+                    var downRotation = _weapon.transform.localRotation *
+                                       Quaternion.Euler(-_ctx.Data.Weapon.Radius, 0, 0);
+                    var upRotation = _weapon.transform.localRotation *
+                                       Quaternion.Euler(_ctx.Data.Weapon.Radius, 0, 0);
+
+                    _weaponMove = DOTween.Sequence();
+                    _weaponMove.Append(_weapon.transform
+                        .DOLocalRotateQuaternion(downRotation, _ctx.Data.Weapon.RadiusSpeed / 2f).SetEase(Ease.Linear));
+                    _weaponMove.Append(_weapon.transform.DOLocalRotateQuaternion(upRotation, _ctx.Data.Weapon.RadiusSpeed).SetEase(Ease.Linear)
+                        .SetLoops(int.MaxValue, LoopType.Yoyo));
+                }
+
                 return;
             }
             if (HasArrivedOrFailed()) {
@@ -78,7 +111,7 @@ namespace CyberBulletRun.Game {
             }
             
         }
-        
+
         public bool HasArrivedOrFailed() {
             if (_agent == null) {
                 return false;
@@ -89,6 +122,8 @@ namespace CyberBulletRun.Game {
                 {
                     if (!_agent.hasPath || _agent.velocity.sqrMagnitude == 0f) {
                         _isMoving = false;
+                        _agent.isStopped = true;
+                        _agent.enabled = false;
                         return true;
                     }
                 }
@@ -96,8 +131,16 @@ namespace CyberBulletRun.Game {
             return false;
         }
 
+        public Vector3 WeaponDirection() {
+            return (_weapon.transform.rotation * Vector3.forward).normalized;
+        }
         public void Dispose() {
+            _weapon.transform.DOKill();
+            if (_weaponMove != null) {
+                _weaponMove.Kill();
+            }
             Destroy(gameObject);
         }
+
     }
 }

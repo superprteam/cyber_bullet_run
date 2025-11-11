@@ -31,6 +31,7 @@ namespace CyberBulletRun.Game
 
         private readonly Ctx _ctx;
         private Character _enemy;
+        private CharacterView _enemyView;
 
         public EnemySpawner(Ctx ctx) {
             _ctx = ctx;
@@ -40,14 +41,14 @@ namespace CyberBulletRun.Game
 
         private async UniTask SpawnEnemy(Stair stair) {
             var characterPrefab = await Cacher.GetBundleAsync("main", "Character");
-            var enemyView = GameObject.Instantiate(characterPrefab as GameObject, _ctx.Root.transform).GetComponent<CharacterView>();
+            _enemyView = GameObject.Instantiate(characterPrefab as GameObject, _ctx.Root.transform).GetComponent<CharacterView>();
             
             _enemy = new Character(new CharacterData() {
                 HP = 1,
                 SkinId = 1,
                 WeaponId = 1,
             });
-            await _enemy.Init(_ctx.Controller, enemyView, _ctx.ShotSpawn);
+            await _enemy.Init(_ctx.Controller, _enemyView, _ctx.ShotSpawn);
             _ctx.Controller.SetPos(stair.EnemySpawnPoint.position, false);
             _ctx.Controller.SetPos(stair.EnemyPoint.position, true);
 
@@ -73,13 +74,19 @@ namespace CyberBulletRun.Game
         }
         
         private async UniTask OnShotCollision(ShotSpawner.ShotCollision shotCollision) {
-            if (shotCollision.Collider.gameObject.CompareTag("Character")) {
-                _enemy.Data.HP--;
-                if (_enemy.Data.HP <= 0) {
-                    var index = _ctx.Stairs.IndexOf(_ctx.CurrentStair.Value);
-                    if (index + 1 < _ctx.Stairs.Count) {
-                        _ctx.CurrentStair.Value = _ctx.Stairs[index + 1];
+            if (shotCollision.Collider != null && shotCollision.Collider.gameObject.CompareTag("Character")) {
+                if (shotCollision.Collider.gameObject.transform.parent.GetComponent<CharacterView>() == _enemyView) {
+                    _enemy.Data.HP--;
+                    if (_enemy.Data.HP <= 0) {
+                        var index = _ctx.Stairs.IndexOf(_ctx.CurrentStair.Value);
+                        if (index + 1 < _ctx.Stairs.Count) {
+                            _ctx.CurrentStair.Value = _ctx.Stairs[index + 1];
+                        }
                     }
+                }
+            } else {
+                if (shotCollision.IsLastCollision) {
+                    Debug.Log("Enemy shot to player");
                 }
             }
         }

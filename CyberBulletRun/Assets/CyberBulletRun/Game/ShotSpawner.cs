@@ -22,6 +22,7 @@ namespace CyberBulletRun.Game
         public struct ShotCollision {
             public Shot Shot;
             public Collider Collider;
+            public bool IsLastCollision;
         }
         
         private enum State {
@@ -59,10 +60,11 @@ namespace CyberBulletRun.Game
         }
 
         private void ShotCollisionCallback(ShotView shotView, Collider collider) {
-            _currentState = State.FREE;
+            CheckIsVisible();
             _ctx.ShotCollision.Execute(new ShotCollision() {
                 Shot = shotView.GetShot(),
                 Collider = collider,
+                IsLastCollision = _currentState == State.FREE,
             });
         }
 
@@ -73,7 +75,20 @@ namespace CyberBulletRun.Game
             await SpawnShot(shot);
         }
 
+        private void CheckIsVisible() {
+            for (int i = 0; i < _shotViews.Count; i++) {
+                if (_shotViews[i].IsVisible) {
+                    return;
+                }
+            }
+
+            _currentState = State.FREE;
+        }
+        
         public void Update() {
+            if (_currentState == State.FREE) {
+                return;
+            }
             for (int i = 0; i < _shotViews.Count; i++) {
                 if (_shotViews[i].IsVisible) {
                     _shotViews[i].UpdateInternal();

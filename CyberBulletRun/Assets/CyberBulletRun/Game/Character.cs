@@ -69,6 +69,7 @@ namespace CyberBulletRun.Game {
             var weaponText = await Cacher.GetTextAsync(path);
             var weapons = JsonConvert.DeserializeObject<List<WeaponData>>(weaponText);
             _currentWeapon = weapons.Find(w => w.Id == Data.WeaponId);
+            Data.Weapon = _currentWeapon;
         }
 
         private async UniTask<Shot> OnShooting(Shot shot) {
@@ -86,7 +87,10 @@ namespace CyberBulletRun.Game {
         private async UniTask OnMoveTo(CharacterView.MoveTo moveTo) {
             CurrentState = CharacterState.MOVE;
         }
-        
+
+        public Vector3 WeaponDirection() {
+            return _сharacterView.WeaponDirection();
+        }
         public void TakeDamage(int amount) {
             /* ... */
         }

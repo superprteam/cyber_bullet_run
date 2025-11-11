@@ -73,7 +73,8 @@ namespace CyberBulletRun.Game.Controllers {
                 var position = _weaponFire.Value.position;
                 var shot = new Shot() {
                     StartPos = position,
-                    Direction = Vector3.Normalize(_ctx.Stairs[stairIndex + 1].EnemyPoint.position + HEART_UP - position)
+                    //Direction = Vector3.Normalize(_ctx.Stairs[stairIndex + 1].EnemyPoint.position + HEART_UP - position)
+                    Direction = _ctx.Character.WeaponDirection(),
                 };
                 _shooting.Execute(shot);
             }

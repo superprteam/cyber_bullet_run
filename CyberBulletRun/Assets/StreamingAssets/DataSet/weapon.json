@@ -1,1 +1,1 @@
-[{"Id": 1, "Name": "Weapon1", "Speed": 3}]
+[{"Id": 1, "Name": "Weapon1", "Speed": 3, "Damage": 1, "Spread": 15, "Ammo": 1, "Radius": 15, "RadiusSpeed": 1}]

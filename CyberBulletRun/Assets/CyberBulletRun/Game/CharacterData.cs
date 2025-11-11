@@ -1,4 +1,5 @@
 using System;
+using CyberBulletRun.DataSet;
 using UnityEngine;
 
 namespace CyberBulletRun.Game {
@@ -6,5 +7,6 @@ namespace CyberBulletRun.Game {
         public int HP;
         public int SkinId;
         public int WeaponId;
+        public WeaponData Weapon;
     }
 }
