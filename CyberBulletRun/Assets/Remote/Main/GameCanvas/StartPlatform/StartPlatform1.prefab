@@ -168,10 +168,10 @@ MonoBehaviour:
   m_OverrideTileSize: 0
   m_TileSize: 256
   m_OverrideVoxelSize: 0
-  m_VoxelSize: 0.033333335
-  m_MinRegionArea: 2
+  m_VoxelSize: 0.016666668
+  m_MinRegionArea: 1
   m_NavMeshData: {fileID: 0}
-  m_BuildHeightMesh: 1
+  m_BuildHeightMesh: 0
 --- !u!1 &4358258975733992226
 GameObject:
   m_ObjectHideFlags: 0

@@ -11,9 +11,9 @@ namespace CyberBulletRun.Game.Controllers {
         private static readonly Vector3 HEART_UP = new Vector3(0, 0.3f, 0);
 
         public struct PlayerControllerCtx {
-            public Character Character;
             public ReactiveProperty<Stair> CurrentStair;
             public List<Stair> Stairs;
+            public ReactiveCommand NextStair;
         }
 
         private PlayerControllerCtx _ctx;
@@ -24,9 +24,12 @@ namespace CyberBulletRun.Game.Controllers {
         private ReactiveCommand<Shot> _shooting;
         private ReactiveProperty<Transform> _weaponFire;
 
+        private Character _character;
+
         public PlayerController(PlayerControllerCtx ctx) {
             _ctx = ctx;
             _ctx.CurrentStair.Subscribe(async (stair) => await OnChangeCurrentStair(stair));
+            _ctx.NextStair.Subscribe(async (Unit) => await OnNextStair());
             _noAnimation = true;
         }
 
@@ -67,19 +70,20 @@ namespace CyberBulletRun.Game.Controllers {
         }
 
         public void Update() {
-            if (Input.GetMouseButtonDown(0) && _ctx.Character.CurrentState == Character.CharacterState.IDLE) {
-                var stairIndex = _ctx.Stairs.IndexOf(_ctx.CurrentStair.Value);
-
-                var position = _weaponFire.Value.position;
-                var shot = new Shot() {
-                    StartPos = position,
-                    //Direction = Vector3.Normalize(_ctx.Stairs[stairIndex + 1].EnemyPoint.position + HEART_UP - position)
-                    Direction = _ctx.Character.WeaponDirection(),
-                };
-                _shooting.Execute(shot);
+            if (Input.GetMouseButtonDown(0) && _character.CurrentState == Character.CharacterState.IDLE) {
+                Shot();
             }
         }
 
+        public void Shot() {
+            var position = _weaponFire.Value.position;
+            var shot = new Shot() {
+                StartPos = position,
+                Direction = _character.WeaponDirection(),
+            };
+            _shooting.Execute(shot);
+        }
+        
         public void SetCommands(ReactiveCommand<CharacterView.MoveTo> moveTo, ReactiveCommand moveEnd,
                                 ReactiveCommand<Vector3> targetPos, ReactiveCommand<Shot> shooting,
                                 ReactiveProperty<Transform> weaponFire) {
@@ -92,6 +96,17 @@ namespace CyberBulletRun.Game.Controllers {
             _moveEnd.Subscribe(async (Unit) => await OnMoveEnd());
         }
 
+        public void SetCharacter(Character character) {
+            _character = character;
+        }
+
+        private async UniTask OnNextStair() {
+            var index = _ctx.Stairs.IndexOf(_ctx.CurrentStair.Value);
+            if (index + 1 < _ctx.Stairs.Count) {
+                _ctx.CurrentStair.Value = _ctx.Stairs[index + 1];
+            }
+        }
+        
         private async UniTask<Unit> OnMoveEnd() {
             /*
             await UniTask.WaitForSeconds(1);

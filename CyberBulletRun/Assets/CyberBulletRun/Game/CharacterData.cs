@@ -8,5 +8,6 @@ namespace CyberBulletRun.Game {
         public int SkinId;
         public int WeaponId;
         public WeaponData Weapon;
+        public bool IsEnemy;
     }
 }

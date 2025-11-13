@@ -26,8 +26,9 @@ namespace CyberBulletRun.Game {
         private ReactiveCommand<Shot> Shooting;
         private WeaponData _currentWeapon;
         private ReactiveProperty<Transform> WeaponFire;
-        private ReactiveCommand<Shot> _shotSpawn;
-
+        private ReactiveCommand<Shot> ShotSpawn;
+        private ReactiveCommand NextStair;
+        private ReactiveCommand<ShotSpawner.ShotCollision> ShotCollision;
 
         public Character(CharacterData data) {
             Data = data;
@@ -35,10 +36,12 @@ namespace CyberBulletRun.Game {
         }
 
         public async UniTask Init(IController controller, CharacterView characterView,
-                                  ReactiveCommand<Shot> shotSpawn) {
+                                  ReactiveCommand<Shot> shotSpawn, ReactiveCommand nextStair, ReactiveCommand<ShotSpawner.ShotCollision> shotCollision) {
             _controller = controller;
             _сharacterView = characterView;
-            _shotSpawn = shotSpawn;
+            ShotSpawn = shotSpawn;
+            NextStair = nextStair;
+            ShotCollision = shotCollision;
 
             await Load();
             
@@ -53,8 +56,10 @@ namespace CyberBulletRun.Game {
             MoveTo.Subscribe(async (moveTo) => await OnMoveTo(moveTo));
             MoveEnd.Subscribe(async (Unit) => await OnMoveEnd());
             Shooting.Subscribe(async (shot) => await OnShooting(shot));
+            ShotCollision.Subscribe(async (shotCollision) => await OnShotCollision(shotCollision));
             
             _controller.SetCommands(MoveTo, MoveEnd, TargetPos, Shooting, WeaponFire);
+            _controller.SetCharacter(this);
             _сharacterView.Init(new CharacterView.CharacterViewCtx() {
                 Data = Data,
                 MoveTo = MoveTo,
@@ -75,7 +80,7 @@ namespace CyberBulletRun.Game {
         private async UniTask<Shot> OnShooting(Shot shot) {
             shot.Speed = _currentWeapon.Speed;
             Debug.Log("ShotSpeed: " + shot.Speed);
-            _shotSpawn.Execute(shot);
+            ShotSpawn.Execute(shot);
             return default;
         }
 
@@ -95,6 +100,22 @@ namespace CyberBulletRun.Game {
             /* ... */
         }
 
+        private async UniTask OnShotCollision(ShotSpawner.ShotCollision shotCollision) {
+            if (shotCollision.Collider != null && shotCollision.Collider.gameObject.CompareTag("Character")) {
+                if (shotCollision.Collider.gameObject.transform.parent.GetComponent<CharacterView>() == _сharacterView) {
+                    Data.HP--;
+                    if (Data.HP <= 0 && Data.IsEnemy) {
+                        NextStair.Execute();
+                    }
+                }
+            } else {
+                if (shotCollision.IsLastCollision && Data.IsEnemy) {
+                    Debug.Log("Enemy shot to player");
+                    _controller.Shot();
+                }
+            }
+        }
+        
         public void Dispose() {
             _сharacterView.Dispose();
         }

@@ -33,6 +33,7 @@ namespace CyberBulletRun.Game
         private LevelData _levelData;
         private ReactiveCommand<Shot> _shotSpawn;
         private ReactiveCommand<ShotSpawner.ShotCollision> _shotCollision;
+        private ReactiveCommand _nextStair;
         
         public Entity(Ctx ctx)
         {
@@ -58,6 +59,7 @@ namespace CyberBulletRun.Game
             _stairs = new List<Stair>();
             _shotSpawn = new ReactiveCommand<Shot>();
             _shotCollision = new ReactiveCommand<ShotSpawner.ShotCollision>();
+            _nextStair = new ReactiveCommand();
             
             _levelGenerate = new LevelGenerate(new LevelGenerate.Ctx {
                 Root = window,
@@ -78,6 +80,8 @@ namespace CyberBulletRun.Game
                 Stairs = _stairs,
                 Controller = enemyController,
                 ShotCollision = _shotCollision,
+                ShotSpawn = _shotSpawn,
+                NextStair = _nextStair,
             }).AddTo(this);
             
             // player
@@ -90,11 +94,11 @@ namespace CyberBulletRun.Game
                 WeaponId = 1,
             });
             var playerController = new PlayerController(new PlayerController.PlayerControllerCtx() {
-                Character = _player,
                 CurrentStair = _currentStair,
                 Stairs = _stairs,
+                NextStair = _nextStair,
             });
-            await _player.Init(playerController, playerView, _shotSpawn);
+            await _player.Init(playerController, playerView, _shotSpawn, _nextStair, _shotCollision);
             
             // stairs
             _cameraController = new CameraController(new CameraController.Ctx {

@@ -63,14 +63,14 @@ namespace CyberBulletRun.Game {
         
         async void Update() {
             if (!_isMoving) {
-                if (_weaponMove == null && _ctx.Data.Weapon != null) {
+                if (_weaponMove == null && _ctx.Data.Weapon != null && !_ctx.Data.IsEnemy) {
                     
                     Vector3 directionBody = _targetPos - _body.transform.position;
                     directionBody.y = 0f;
                     Quaternion targetRotation = Quaternion.LookRotation(directionBody);
                     _body.transform.rotation = targetRotation;
 
-                    await UniTask.NextFrame();
+                    //await UniTask.NextFrame();
                     
                     var directionWeapon = _weapon.transform.parent.InverseTransformPoint(_targetPos) - _weapon.transform.localPosition;
                     //var directionWeapon = _targetPos - _weapon.transform.position;

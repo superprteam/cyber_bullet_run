@@ -19,7 +19,9 @@ namespace CyberBulletRun.Game.Controllers {
         private ReactiveCommand<CharacterView.MoveTo> _moveTo;
         private ReactiveCommand<Vector3> _targetPos;
         private ReactiveCommand<Unit> _moveEnd;
+        private ReactiveCommand<Shot> _shooting;
         private ReactiveProperty<Transform> _weaponFire;
+        private Character _character;
         
         public AIController(AIControllerCtx ctx) {
             _ctx = ctx;
@@ -61,8 +63,6 @@ namespace CyberBulletRun.Game.Controllers {
             
         }
         
-        
-        
         public void Update() { 
         }
 
@@ -71,11 +71,16 @@ namespace CyberBulletRun.Game.Controllers {
             _moveTo = moveTo;
             _moveEnd = moveEnd;
             _targetPos = targetPos;
+            _shooting = shooting;
             _weaponFire = weaponFire;
             
             _moveEnd.Subscribe(async (Unit) => await OnMoveEnd());
         }
 
+        public void SetCharacter(Character character) {
+            _character = character;
+        }
+        
         private async UniTask<Unit> OnMoveEnd() {
             /*
             await UniTask.WaitForSeconds(1);
@@ -95,6 +100,15 @@ namespace CyberBulletRun.Game.Controllers {
             }
             */
             return default;
+        }
+
+        public void Shot() {
+            var position = _weaponFire.Value.position;
+            var shot = new Shot() {
+                StartPos = position,
+                Direction = _character.WeaponDirection(),
+            };
+            _shooting.Execute(shot);
         }
     }
 }
