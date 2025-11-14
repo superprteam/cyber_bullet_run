@@ -34,6 +34,7 @@ namespace CyberBulletRun.Game {
         private Vector3 _weaponLocalPosition;
         
         public void Init(CharacterViewCtx ctx) {
+            _agent.updateRotation = false;
             _ctx = ctx;
             _ctx.MoveTo?.Subscribe(async (moveTo) => await OnMoveTo(moveTo));
             _ctx.TargetPos?.Subscribe(async (targetPos) => await OnTargetPos(targetPos));
@@ -47,11 +48,12 @@ namespace CyberBulletRun.Game {
             _weaponMove.Kill(true);
             _weaponMove = null;
             if (moveTo.IsAnimate) {
-                //_agent.isStopped = false;
                 _agent.enabled = true;
                 _agent.SetDestination(moveTo.Position);
                 Debug.Log("SetDestination: " + moveTo.Position);
             } else {
+                transform.position = moveTo.Position;
+                _agent.enabled = true;
                 _agent.Warp(moveTo.Position);
                 Debug.Log("Warp: " + moveTo.Position);
             }
@@ -62,6 +64,12 @@ namespace CyberBulletRun.Game {
         }
         
         async void Update() {
+            
+            var rot = transform.rotation.eulerAngles;
+            rot.x = 0f;
+            rot.z = 0f;
+            transform.rotation = Quaternion.Euler(rot);
+            
             if (!_isMoving) {
                 if (_weaponMove == null && _ctx.Data.Weapon != null && !_ctx.Data.IsEnemy) {
                     
@@ -122,8 +130,8 @@ namespace CyberBulletRun.Game {
                 {
                     if (!_agent.hasPath || _agent.velocity.sqrMagnitude == 0f) {
                         _isMoving = false;
-                        _agent.isStopped = true;
-                        _agent.enabled = false;
+                        //_agent.isStopped = true;
+                        //_agent.enabled = false;
                         return true;
                     }
                 }

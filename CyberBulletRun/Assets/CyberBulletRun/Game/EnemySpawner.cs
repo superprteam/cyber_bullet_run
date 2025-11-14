@@ -37,7 +37,7 @@ namespace CyberBulletRun.Game
 
         private async UniTask SpawnEnemy(Stair stair) {
             var characterPrefab = await Cacher.GetBundleAsync("main", "Character");
-            _enemyView = GameObject.Instantiate(characterPrefab as GameObject, _ctx.Root.transform).GetComponent<CharacterView>();
+            _enemyView = GameObject.Instantiate(characterPrefab as GameObject, stair.EnemySpawnPoint.position + new Vector3(0, 0.1f, 0), Quaternion.identity, _ctx.Root.transform).GetComponent<CharacterView>();
             
             _enemy = new Character(new CharacterData() {
                 HP = 1,
