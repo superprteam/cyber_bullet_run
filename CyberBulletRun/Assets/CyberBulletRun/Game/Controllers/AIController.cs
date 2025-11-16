@@ -12,6 +12,8 @@ namespace CyberBulletRun.Game.Controllers {
         public struct AIControllerCtx {
             public ReactiveProperty<Stair> CurrentStair;
             public List<Stair> Stairs;
+            public ReactiveCommand<EndGameData> EndGame;
+            public ReactiveCommand<int> KeyPressed;
         }
 
         private AIControllerCtx _ctx;
@@ -22,7 +24,7 @@ namespace CyberBulletRun.Game.Controllers {
         private ReactiveCommand<Shot> _shooting;
         private ReactiveProperty<Transform> _weaponFire;
         private Character _character;
-        
+
         public AIController(AIControllerCtx ctx) {
             _ctx = ctx;
             _ctx.CurrentStair.Subscribe(async (stair) => await OnChangeCurrentStair(stair));
@@ -109,6 +111,10 @@ namespace CyberBulletRun.Game.Controllers {
                 Direction = _character.WeaponDirection(),
             };
             _shooting.Execute(shot);
+        }
+
+        public void EndGame(EndGameData endGameData) {
+            _ctx.EndGame.Execute(endGameData);
         }
     }
 }

@@ -66,6 +66,10 @@ namespace CyberBulletRun.Game
                 var index = _ctx.Stairs.IndexOf(stair);
                 if (index + 1 < _ctx.Stairs.Count) {
                     await SpawnEnemy(_ctx.Stairs[index + 1]);
+                } else {
+                    _ctx.Controller.EndGame(new EndGameData() {
+                        IsWin = true,
+                    });
                 }
             }
         }

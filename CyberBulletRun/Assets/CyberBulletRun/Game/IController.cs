@@ -11,5 +11,6 @@ namespace CyberBulletRun.Game {
         void SetTarget(Vector3 position);
         void SetCharacter(Character character);
         void Shot();
+        void EndGame(EndGameData endGameData);
     }
 }

@@ -9,6 +9,7 @@ using Shared.LocalCache;
 using Shared.UI;
 using UniRx;
 using UnityEngine;
+using Screen = CyberBulletRun.Game.View.Screen;
 
 namespace CyberBulletRun.Game 
 {
@@ -34,6 +35,8 @@ namespace CyberBulletRun.Game
         private ReactiveCommand<Shot> _shotSpawn;
         private ReactiveCommand<ShotSpawner.ShotCollision> _shotCollision;
         private ReactiveCommand _nextStair;
+        private ReactiveCommand<EndGameData> _endGame;
+        private ReactiveCommand<int> _keyPressed;
         
         public Entity(Ctx ctx)
         {
@@ -60,6 +63,10 @@ namespace CyberBulletRun.Game
             _shotSpawn = new ReactiveCommand<Shot>();
             _shotCollision = new ReactiveCommand<ShotSpawner.ShotCollision>();
             _nextStair = new ReactiveCommand();
+            _endGame = new ReactiveCommand<EndGameData>();
+            _keyPressed = new ReactiveCommand<int>();
+
+            ((Screen)_window).SetCommands(_endGame, _keyPressed);
             
             _levelGenerate = new LevelGenerate(new LevelGenerate.Ctx {
                 Root = window,
@@ -72,6 +79,8 @@ namespace CyberBulletRun.Game
             var enemyController = new AIController(new AIController.AIControllerCtx() {
                 CurrentStair = _currentStair,
                 Stairs = _stairs,
+                EndGame = _endGame,
+                KeyPressed = _keyPressed,
             });
             
             _enemySpawner = new EnemySpawner(new EnemySpawner.Ctx {
@@ -97,6 +106,8 @@ namespace CyberBulletRun.Game
                 CurrentStair = _currentStair,
                 Stairs = _stairs,
                 NextStair = _nextStair,
+                EndGame = _endGame,
+                KeyPressed = _keyPressed,
             });
             await _player.Init(playerController, playerView, _shotSpawn, _nextStair, _shotCollision);
             

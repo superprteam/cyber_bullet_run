@@ -14,6 +14,8 @@ namespace CyberBulletRun.Game.Controllers {
             public ReactiveProperty<Stair> CurrentStair;
             public List<Stair> Stairs;
             public ReactiveCommand NextStair;
+            public ReactiveCommand<EndGameData> EndGame;
+            public ReactiveCommand<int> KeyPressed;
         }
 
         private PlayerControllerCtx _ctx;
@@ -30,6 +32,7 @@ namespace CyberBulletRun.Game.Controllers {
             _ctx = ctx;
             _ctx.CurrentStair.Subscribe(async (stair) => await OnChangeCurrentStair(stair));
             _ctx.NextStair.Subscribe(async (Unit) => await OnNextStair());
+            _ctx.KeyPressed.Subscribe(async (key) => await OnChangeKeyPressed(key));
             _noAnimation = true;
         }
 
@@ -70,7 +73,10 @@ namespace CyberBulletRun.Game.Controllers {
         }
 
         public void Update() {
-            if (Input.GetMouseButtonDown(0) && _character.CurrentState == Character.CharacterState.IDLE) {
+        }
+
+        private async UniTask OnChangeKeyPressed(int key) {
+            if (_character.CurrentState == Character.CharacterState.IDLE) {
                 Shot();
             }
         }
@@ -127,5 +133,11 @@ namespace CyberBulletRun.Game.Controllers {
             */
             return default;
         }
+        
+        public void EndGame(EndGameData endGameData) {
+            _character.Dispose();
+            _ctx.EndGame.Execute(endGameData);
+        }
+        
     }
 }

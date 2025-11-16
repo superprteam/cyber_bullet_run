@@ -107,6 +107,11 @@ namespace CyberBulletRun.Game {
                     if (Data.HP <= 0 && Data.IsEnemy) {
                         NextStair.Execute();
                     }
+                    if (Data.HP <= 0 && !Data.IsEnemy) {
+                        _controller.EndGame(new EndGameData() {
+                            IsWin = false,
+                        });
+                    }
                 }
             } else {
                 if (shotCollision.IsLastCollision && Data.IsEnemy) {
