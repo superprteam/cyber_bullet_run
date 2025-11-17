@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using CyberBulletRun.DataSet;
+using CyberBulletRun.Game.Controllers;
 using Cysharp.Threading.Tasks;
 using Newtonsoft.Json;
 using Shared.LocalCache;
@@ -20,11 +21,11 @@ namespace CyberBulletRun.Game {
         
         private IController _controller;
         private CharacterView _сharacterView;
+        private WeaponData _currentWeapon;
         private ReactiveCommand<CharacterView.MoveTo> MoveTo;
         private ReactiveCommand<Vector3> TargetPos;
         private ReactiveCommand MoveEnd;
         private ReactiveCommand<Shot> Shooting;
-        private WeaponData _currentWeapon;
         private ReactiveProperty<Transform> WeaponFire;
         private ReactiveCommand<Shot> ShotSpawn;
         private ReactiveCommand NextStair;
@@ -104,14 +105,15 @@ namespace CyberBulletRun.Game {
             if (shotCollision.Collider != null && shotCollision.Collider.gameObject.CompareTag("Character")) {
                 if (shotCollision.Collider.gameObject.transform.parent.GetComponent<CharacterView>() == _сharacterView) {
                     Data.HP--;
-                    if (Data.HP <= 0 && Data.IsEnemy) {
-                        NextStair.Execute();
+                    if (Data.HP > 0 && Data.IsEnemy) {
+                        ((AIController)_controller).Retreat();
                     }
                     if (Data.HP <= 0 && !Data.IsEnemy) {
                         _controller.EndGame(new EndGameData() {
                             IsWin = false,
                         });
                     }
+                    NextStair.Execute();
                 }
             } else {
                 if (shotCollision.IsLastCollision && Data.IsEnemy) {

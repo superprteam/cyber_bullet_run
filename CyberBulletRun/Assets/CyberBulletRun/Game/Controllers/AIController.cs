@@ -116,5 +116,13 @@ namespace CyberBulletRun.Game.Controllers {
         public void EndGame(EndGameData endGameData) {
             _ctx.EndGame.Execute(endGameData);
         }
+
+        public void Retreat() {
+            var indexStair = _ctx.Stairs.IndexOf(_ctx.CurrentStair.Value);
+            if (indexStair + 2 < _ctx.Stairs.Count) {
+                SetPos(_ctx.Stairs[indexStair + 2].EnemyPoint.position, true);
+                SetTarget(_ctx.Stairs[indexStair + 1].StopPoint.position);
+            }
+        }
     }
 }
