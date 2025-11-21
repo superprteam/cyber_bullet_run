@@ -8,5 +8,6 @@ namespace CyberBulletRun.Managers.UIManager {
         public Game.Data GameData;
         public Shop.Data ShopData;
         public Options.Data OptionsData;
+        public DataSet.Data DataLoaded;
     }
 }

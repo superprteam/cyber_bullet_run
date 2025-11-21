@@ -15,7 +15,7 @@ namespace CyberBulletRun.Game {
         [SerializeField] private GameObject _weapon;
         [SerializeField] private Transform _weaponFire;
         public struct CharacterViewCtx {
-            public CharacterData Data;
+            public CharacterDataRealtime DataRealtime;
             public ReactiveCommand<MoveTo> MoveTo;
             public ReactiveCommand MoveEnd;
             public ReactiveCommand<Vector3> TargetPos;
@@ -71,7 +71,7 @@ namespace CyberBulletRun.Game {
             transform.rotation = Quaternion.Euler(rot);
             
             if (!_isMoving) {
-                if (_weaponMove == null && _ctx.Data.Weapon != null && !_ctx.Data.IsEnemy) {
+                if (_weaponMove == null && _ctx.DataRealtime.Weapon != null && !_ctx.DataRealtime.IsEnemy) {
                     
                     Vector3 directionBody = _targetPos - _body.transform.position;
                     directionBody.y = 0f;
@@ -85,14 +85,14 @@ namespace CyberBulletRun.Game {
                     _weapon.transform.localRotation = Quaternion.LookRotation(directionWeapon, Vector3.up);
                     
                     var downRotation = _weapon.transform.localRotation *
-                                       Quaternion.Euler(-_ctx.Data.Weapon.Radius, 0, 0);
+                                       Quaternion.Euler(-_ctx.DataRealtime.Weapon.Radius, 0, 0);
                     var upRotation = _weapon.transform.localRotation *
-                                       Quaternion.Euler(_ctx.Data.Weapon.Radius, 0, 0);
+                                       Quaternion.Euler(_ctx.DataRealtime.Weapon.Radius, 0, 0);
 
                     _weaponMove = DOTween.Sequence();
                     _weaponMove.Append(_weapon.transform
-                        .DOLocalRotateQuaternion(downRotation, _ctx.Data.Weapon.RadiusSpeed / 2f).SetEase(Ease.Linear));
-                    _weaponMove.Append(_weapon.transform.DOLocalRotateQuaternion(upRotation, _ctx.Data.Weapon.RadiusSpeed).SetEase(Ease.Linear)
+                        .DOLocalRotateQuaternion(downRotation, _ctx.DataRealtime.Weapon.RadiusSpeed / 2f).SetEase(Ease.Linear));
+                    _weaponMove.Append(_weapon.transform.DOLocalRotateQuaternion(upRotation, _ctx.DataRealtime.Weapon.RadiusSpeed).SetEase(Ease.Linear)
                         .SetLoops(int.MaxValue, LoopType.Yoyo));
                 }
 

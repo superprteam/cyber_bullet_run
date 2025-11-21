@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using CyberBulletRun.DataSet;
 using CyberBulletRun.Game.Controllers;
 using CyberBulletRun.Game.View;
 using Cysharp.Threading.Tasks;
@@ -53,9 +55,7 @@ namespace CyberBulletRun.Game
 
             int levelNumber = 1;
             
-            var levelPath = $"Level{levelNumber}/Level.json";
-            var levelText = await Cacher.GetTextAsync(levelPath);
-            _levelData = JsonConvert.DeserializeObject<LevelData>(levelText);
+            _levelData = _ctx.Data.DataLoaded.Levels[levelNumber];
             
             
             _currentStair = new ReactiveProperty<Stair>();
@@ -73,6 +73,7 @@ namespace CyberBulletRun.Game
                 LevelData = _levelData,
                 CurrentStair = _currentStair,
                 Stairs = _stairs,
+                Characters = _ctx.Data.DataLoaded.Characters,
             }).AddTo(this);
 
             // enemy
@@ -91,17 +92,25 @@ namespace CyberBulletRun.Game
                 ShotCollision = _shotCollision,
                 ShotSpawn = _shotSpawn,
                 NextStair = _nextStair,
+                DataLoaded = _ctx.Data.DataLoaded,
+                LevelData = _levelData,
             }).AddTo(this);
             
             // player
             var characterPrefab = await Cacher.GetBundleAsync("main", "Character");
             var playerView = GameObject.Instantiate(characterPrefab as GameObject, window.transform).GetComponent<CharacterView>();
-            
-            _player = new Character(new CharacterData() {
+
+            var playerData = new CharacterData() {
+                Id = 0,
+                Name = "player",
                 HP = 1,
                 SkinId = 1,
                 WeaponId = 1,
-            });
+            };
+            var weapon = _ctx.Data.DataLoaded.Weapon[playerData.WeaponId];
+            
+            _player = new Character(new CharacterDataRealtime(playerData, weapon, false));
+            
             var playerController = new PlayerController(new PlayerController.PlayerControllerCtx() {
                 CurrentStair = _currentStair,
                 Stairs = _stairs,

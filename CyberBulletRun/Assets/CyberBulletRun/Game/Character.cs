@@ -16,12 +16,11 @@ namespace CyberBulletRun.Game {
             MOVE = 1,
         }
         
-        public CharacterData Data;
+        public CharacterDataRealtime DataRealtime;
         public CharacterState CurrentState;
         
         private IController _controller;
         private CharacterView _сharacterView;
-        private WeaponData _currentWeapon;
         private ReactiveCommand<CharacterView.MoveTo> MoveTo;
         private ReactiveCommand<Vector3> TargetPos;
         private ReactiveCommand MoveEnd;
@@ -31,8 +30,8 @@ namespace CyberBulletRun.Game {
         private ReactiveCommand NextStair;
         private ReactiveCommand<ShotSpawner.ShotCollision> ShotCollision;
 
-        public Character(CharacterData data) {
-            Data = data;
+        public Character(CharacterDataRealtime dataRealtime) {
+            DataRealtime = dataRealtime;
             CurrentState = CharacterState.IDLE;
         }
 
@@ -44,8 +43,6 @@ namespace CyberBulletRun.Game {
             NextStair = nextStair;
             ShotCollision = shotCollision;
 
-            await Load();
-            
             CurrentState = CharacterState.IDLE;
             
             MoveTo = new ReactiveCommand<CharacterView.MoveTo>();
@@ -62,7 +59,7 @@ namespace CyberBulletRun.Game {
             _controller.SetCommands(MoveTo, MoveEnd, TargetPos, Shooting, WeaponFire);
             _controller.SetCharacter(this);
             _сharacterView.Init(new CharacterView.CharacterViewCtx() {
-                Data = Data,
+                DataRealtime = DataRealtime,
                 MoveTo = MoveTo,
                 MoveEnd = MoveEnd,
                 TargetPos = TargetPos, 
@@ -70,16 +67,8 @@ namespace CyberBulletRun.Game {
             });
         }
 
-        private async UniTask Load() {
-            var path = $"DataSet/weapon.json";
-            var weaponText = await Cacher.GetTextAsync(path);
-            var weapons = JsonConvert.DeserializeObject<List<WeaponData>>(weaponText);
-            _currentWeapon = weapons.Find(w => w.Id == Data.WeaponId);
-            Data.Weapon = _currentWeapon;
-        }
-
         private async UniTask<Shot> OnShooting(Shot shot) {
-            shot.Speed = _currentWeapon.Speed;
+            shot.Speed = DataRealtime.Weapon.Speed;
             Debug.Log("ShotSpeed: " + shot.Speed);
             ShotSpawn.Execute(shot);
             return default;
@@ -104,11 +93,11 @@ namespace CyberBulletRun.Game {
         private async UniTask OnShotCollision(ShotSpawner.ShotCollision shotCollision) {
             if (shotCollision.Collider != null && shotCollision.Collider.gameObject.CompareTag("Character")) {
                 if (shotCollision.Collider.gameObject.transform.parent.GetComponent<CharacterView>() == _сharacterView) {
-                    Data.HP--;
-                    if (Data.HP > 0 && Data.IsEnemy) {
+                    DataRealtime.HP--;
+                    if (DataRealtime.HP > 0 && DataRealtime.IsEnemy) {
                         ((AIController)_controller).Retreat();
                     }
-                    if (Data.HP <= 0 && !Data.IsEnemy) {
+                    if (DataRealtime.HP <= 0 && !DataRealtime.IsEnemy) {
                         _controller.EndGame(new EndGameData() {
                             IsWin = false,
                         });
@@ -116,7 +105,7 @@ namespace CyberBulletRun.Game {
                     NextStair.Execute();
                 }
             } else {
-                if (shotCollision.IsLastCollision && Data.IsEnemy) {
+                if (shotCollision.IsLastCollision && DataRealtime.IsEnemy) {
                     Debug.Log("Enemy shot to player");
                     _controller.Shot();
                 }

@@ -50,6 +50,7 @@ namespace CyberBulletRun.Managers.UIManager {
                 await loading.Show();
                 await loading.Hide();
             } else if (windowName.Equals(_ctx.Data.GameData.ScreenName)) {
+                _ctx.Data.GameData.DataLoaded = _ctx.Data.DataLoaded;
                 var gameScreen = new Game.Entity(new Game.Entity.Ctx {
                     Data = _ctx.Data.GameData,
                     ShowWindow = ShowWindow,

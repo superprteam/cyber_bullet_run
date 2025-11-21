@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using CyberBulletRun.DataSet;
 using CyberBulletRun.Game.View;
 using Cysharp.Threading.Tasks;
 using Newtonsoft.Json;
@@ -23,6 +24,7 @@ namespace CyberBulletRun.Game
             public ReactiveProperty<Stair> CurrentStair;
             public List<Stair> Stairs;
             public LevelData LevelData;
+            public Dictionary<int, CharacterData> Characters;
         }
 
         private readonly Ctx _ctx;
@@ -43,8 +45,9 @@ namespace CyberBulletRun.Game
             }
 
             var startPlatformPrefab = await Cacher.GetBundleAsync("main", _ctx.LevelData.StartPlatform) as GameObject;
-            
-            Debug.Log("Generate: " + _ctx.LevelData.Length + ", " + _stairPrefabs.Count);
+
+            var levelLength = GetLevelLength();
+            Debug.Log("Generate: " + levelLength + ", " + _stairPrefabs.Count);
 
             var rand = new Random();
             Transform previousTop = null;
@@ -57,7 +60,7 @@ namespace CyberBulletRun.Game
             _ctx.Stairs.Add(_startPlatform);
             
             // Stairs
-            for (int i = 0; i < _ctx.LevelData.Length; i++) {
+            for (int i = 0; i < levelLength; i++) {
                 var prefabKey = _stairPrefabs.Keys.ToList()[rand.Next(_stairPrefabs.Count)]; 
                 var prefab = _stairPrefabs[prefabKey];
                 var stair = GameObject.Instantiate(prefab, _ctx.Root.transform);
@@ -88,6 +91,15 @@ namespace CyberBulletRun.Game
             _ctx.CurrentStair.Value = _ctx.Stairs[0];
         }
 
+        private int GetLevelLength() {
+            int levelLength = 0;
+            foreach(var enemy in _ctx.LevelData.Enemy) {
+                levelLength += _ctx.Characters[enemy].HP;
+            }
+
+            return levelLength;
+        }
+        
         private async UniTask BakeNavMesh() {
             await UniTask.NextFrame();
             

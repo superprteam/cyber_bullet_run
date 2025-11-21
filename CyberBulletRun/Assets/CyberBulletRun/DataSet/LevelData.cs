@@ -1,14 +1,12 @@
 using System;
 using System.Collections.Generic;
 
-namespace CyberBulletRun.Game {
+namespace CyberBulletRun.DataSet {
     [Serializable]
     public class LevelData {
+        public int Id;
         public List<string> Prefabs;
         public string StartPlatform;
-        public List<string> Enemy;
-        public int Length {
-            get { return Enemy.Count; }
-        }
+        public List<int> Enemy;
     }
 }
