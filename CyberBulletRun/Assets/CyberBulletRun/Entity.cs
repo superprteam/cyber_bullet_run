@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using CyberBulletRun.DataSet;
 using CyberBulletRun.Managers.DataLoader;
+using CyberBulletRun.Managers.PlayerData;
 using CyberBulletRun.Managers.UIManager;
 using UnityEngine;
 using UniRx;
@@ -21,6 +22,7 @@ namespace CyberBulletRun
         private readonly Ctx _ctx;
         private UIManager _uiManager;
         private DataLoader _resourceLoader;
+        private PlayerData _playerData;
 
         public Entity(Ctx ctx)
         {
@@ -29,23 +31,25 @@ namespace CyberBulletRun
 
         public async UniTask AsyncProcess() {
 
-            var levels = new Dictionary<int, LevelData>();
-            var characters = new Dictionary<int, CharacterData>();
-            var weapon = new Dictionary<int, WeaponData>();
-            var skins = new Dictionary<int, SkinData>();
-
-            var dataLoaded = new DataSet.Data() {
-                Levels = levels,
-                Characters = characters,
-                Weapon = weapon,
-                Skins = skins,
-            };
+            var dataLoaded = new DataSet.Data();
             
             _resourceLoader = new DataLoader(new DataLoader.Ctx() {
                 Data = dataLoaded, 
             });
 
             await _resourceLoader.Load();
+
+            var levels = dataLoaded.Levels;
+            var characters = dataLoaded.Characters;
+            var weapons = dataLoaded.Weapons;
+            var skins = dataLoaded.Skins;
+
+            _playerData = new PlayerData(new PlayerData.Ctx() {
+                Weapons = weapons,
+                Skins = skins,
+            });
+
+            await _playerData.Load();
             
             _uiManager = new UIManager(new UIManager.Ctx {
                 Data = new Managers.UIManager.Data {
@@ -54,7 +58,13 @@ namespace CyberBulletRun
                     GameData = _ctx.Data.GameData,
                     ShopData = _ctx.Data.ShopData,
                     OptionsData = _ctx.Data.OptionsData,
-                    DataLoaded = dataLoaded, 
+                    DataLoaded = dataLoaded,
+                    LoadItemStatus = _playerData.LoadStatus,
+                    SetItemStatus = _playerData.SetStatus,
+                    GetCurrentWeapon = _playerData.GetCurrentWeapon,
+                    GetCurrentSkin = _playerData.GetCurrentSkin,
+                    SetCurrentWeapon = _playerData.SetCurrentWeapon,
+                    SetCurrentSkin = _playerData.SetCurrentSkin,
                     }
             });
 

@@ -43,7 +43,7 @@ namespace CyberBulletRun.Game
 
             int indexStair = _ctx.Stairs.IndexOf(stair);
             var enemyData = _ctx.DataLoaded.Characters[_ctx.LevelData.Enemy[indexStair-1]];
-            var weapon = _ctx.DataLoaded.Weapon[enemyData.WeaponId];
+            var weapon = _ctx.DataLoaded.Weapons[enemyData.WeaponId];
             _enemy = new Character(new CharacterDataRealtime(enemyData, weapon, true));
             await _enemy.Init(_ctx.Controller, _enemyView, _ctx.ShotSpawn, _ctx.NextStair, _ctx.ShotCollision);
             _ctx.Controller.SetPos(stair.EnemySpawnPoint.position, false);

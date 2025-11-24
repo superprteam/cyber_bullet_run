@@ -22,6 +22,8 @@ namespace CyberBulletRun.Game
             public Data Data;
             public ReactiveCommand<string> ShowWindow;
             public ReactiveCommand<string> HideWindow;
+            
+            public DataSet.Data DataLoaded;
         }
 
         private IWindow _window;
@@ -55,7 +57,7 @@ namespace CyberBulletRun.Game
 
             int levelNumber = 1;
             
-            _levelData = _ctx.Data.DataLoaded.Levels[levelNumber];
+            _levelData = _ctx.DataLoaded.Levels[levelNumber];
             
             
             _currentStair = new ReactiveProperty<Stair>();
@@ -73,7 +75,7 @@ namespace CyberBulletRun.Game
                 LevelData = _levelData,
                 CurrentStair = _currentStair,
                 Stairs = _stairs,
-                Characters = _ctx.Data.DataLoaded.Characters,
+                Characters = _ctx.DataLoaded.Characters,
             }).AddTo(this);
 
             // enemy
@@ -92,7 +94,7 @@ namespace CyberBulletRun.Game
                 ShotCollision = _shotCollision,
                 ShotSpawn = _shotSpawn,
                 NextStair = _nextStair,
-                DataLoaded = _ctx.Data.DataLoaded,
+                DataLoaded = _ctx.DataLoaded,
                 LevelData = _levelData,
             }).AddTo(this);
             
@@ -107,7 +109,7 @@ namespace CyberBulletRun.Game
                 SkinId = 1,
                 WeaponId = 1,
             };
-            var weapon = _ctx.Data.DataLoaded.Weapon[playerData.WeaponId];
+            var weapon = _ctx.DataLoaded.Weapons[playerData.WeaponId];
             
             _player = new Character(new CharacterDataRealtime(playerData, weapon, false));
             

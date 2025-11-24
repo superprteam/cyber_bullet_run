@@ -12,5 +12,9 @@ namespace CyberBulletRun.DataSet {
         public int Ammo;
         public float Radius;
         public float RadiusSpeed;
+
+        public override string ToString() {
+            return "weapon" + Id;
+        }
     }
 }

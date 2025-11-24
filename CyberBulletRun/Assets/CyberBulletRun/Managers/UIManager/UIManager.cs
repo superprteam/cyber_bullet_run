@@ -50,11 +50,11 @@ namespace CyberBulletRun.Managers.UIManager {
                 await loading.Show();
                 await loading.Hide();
             } else if (windowName.Equals(_ctx.Data.GameData.ScreenName)) {
-                _ctx.Data.GameData.DataLoaded = _ctx.Data.DataLoaded;
                 var gameScreen = new Game.Entity(new Game.Entity.Ctx {
                     Data = _ctx.Data.GameData,
                     ShowWindow = ShowWindow,
                     HideWindow = HideWindow,
+                    DataLoaded = _ctx.Data.DataLoaded,
                 }).AddTo(_disposables);
                 
                 _lastWindow = gameScreen;
@@ -67,6 +67,14 @@ namespace CyberBulletRun.Managers.UIManager {
                     Data = _ctx.Data.ShopData,
                     ShowWindow = ShowWindow,
                     HideWindow = HideWindow,
+                    Weapons = _ctx.Data.DataLoaded.Weapons,
+                    Skins = _ctx.Data.DataLoaded.Skins,
+                    LoadItemStatus = _ctx.Data.LoadItemStatus,
+                    SetItemStatus = _ctx.Data.SetItemStatus,
+                    GetCurrentWeapon = _ctx.Data.GetCurrentWeapon,
+                    GetCurrentSkin = _ctx.Data.GetCurrentSkin,
+                    SetCurrentWeapon = _ctx.Data.SetCurrentWeapon,
+                    SetCurrentSkin = _ctx.Data.SetCurrentSkin,
                 }).AddTo(_disposables);
                 
                 _lastWindow = shopScreen;

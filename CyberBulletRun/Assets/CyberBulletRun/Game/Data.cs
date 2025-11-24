@@ -8,8 +8,6 @@ namespace CyberBulletRun.Game
     {
         [SerializeField] private string _screenName;
 
-        public DataSet.Data DataLoaded;
-
         public readonly string ScreenName => _screenName;
     }
 }

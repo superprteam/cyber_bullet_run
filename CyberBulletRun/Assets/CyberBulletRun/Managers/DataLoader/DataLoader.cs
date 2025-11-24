@@ -26,7 +26,7 @@ namespace CyberBulletRun.Managers.DataLoader {
         }
 
         public async UniTask Load() {
-            _ctx.Data.Weapon = await Load<WeaponData>($"DataSet/weapons.json");
+            _ctx.Data.Weapons = await Load<WeaponData>($"DataSet/weapons.json");
             _ctx.Data.Characters = await Load<CharacterData>($"DataSet/characters.json");
             _ctx.Data.Skins = await Load<SkinData>($"DataSet/skins.json");
             _ctx.Data.Levels = await Load<LevelData>($"DataSet/levels.json");
@@ -43,7 +43,7 @@ namespace CyberBulletRun.Managers.DataLoader {
             foreach (var data in datas) {
                 dict.Add((int)field.GetValue(data), data);
             }
-
+            
             return dict;
         }
         
