@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using CyberBulletRun.Game.View;
 using Cysharp.Threading.Tasks;
+using Shared.Disposable;
 using UniRx;
 using UnityEngine;
 
 namespace CyberBulletRun.Game.Controllers {
-    public class PlayerController : IController {
+    public class PlayerController : BaseDisposable, IController {
         private static readonly Vector3 HEART_UP = new Vector3(0, 0.3f, 0);
 
         public struct PlayerControllerCtx {
@@ -114,23 +115,6 @@ namespace CyberBulletRun.Game.Controllers {
         }
         
         private async UniTask<Unit> OnMoveEnd() {
-            /*
-            await UniTask.WaitForSeconds(1);
-            for(int i=0; i < _ctx.Stairs.Count; i++) {
-                if (_ctx.Stairs[i] == _ctx.CurrentStair.Value) {
-                    if (i + 1 < _ctx.Stairs.Count) {
-                        _ctx.CurrentStair.Value = _ctx.Stairs[i + 1];
-                        Debug.Log("Current Stair: " + (i+1));
-
-                        if (i + 2 < _ctx.Stairs.Count) {
-                            _targetPos.Execute(_ctx.Stairs[i + 2].EnemyPoint.position);
-                        }
-                    }
-
-                    break;
-                }
-            }
-            */
             return default;
         }
         

@@ -4,12 +4,13 @@ using CyberBulletRun.DataSet;
 using CyberBulletRun.Game.Controllers;
 using Cysharp.Threading.Tasks;
 using Newtonsoft.Json;
+using Shared.Disposable;
 using Shared.LocalCache;
 using UniRx;
 using UnityEngine;
 
 namespace CyberBulletRun.Game {
-    public class Character : IDisposable {
+    public class Character : BaseDisposable {
 
         public enum CharacterState {
             IDLE = 0,
@@ -45,11 +46,11 @@ namespace CyberBulletRun.Game {
 
             CurrentState = CharacterState.IDLE;
             
-            MoveTo = new ReactiveCommand<CharacterView.MoveTo>();
-            TargetPos = new ReactiveCommand<Vector3>();
-            MoveEnd = new ReactiveCommand();
-            Shooting = new ReactiveCommand<Shot>();
-            WeaponFire = new ReactiveProperty<Transform>();
+            MoveTo = new ReactiveCommand<CharacterView.MoveTo>().AddTo(this);
+            TargetPos = new ReactiveCommand<Vector3>().AddTo(this);
+            MoveEnd = new ReactiveCommand().AddTo(this);
+            Shooting = new ReactiveCommand<Shot>().AddTo(this);
+            WeaponFire = new ReactiveProperty<Transform>().AddTo(this);
 
             MoveTo.Subscribe(async (moveTo) => await OnMoveTo(moveTo));
             MoveEnd.Subscribe(async (Unit) => await OnMoveEnd());
@@ -68,8 +69,7 @@ namespace CyberBulletRun.Game {
         }
 
         private async UniTask<Shot> OnShooting(Shot shot) {
-            shot.Speed = DataRealtime.Weapon.Speed;
-            Debug.Log("ShotSpeed: " + shot.Speed);
+            shot.Weapon = DataRealtime.Weapon;
             ShotSpawn.Execute(shot);
             return default;
         }
@@ -86,14 +86,10 @@ namespace CyberBulletRun.Game {
         public Vector3 WeaponDirection() {
             return _сharacterView.WeaponDirection();
         }
-        public void TakeDamage(int amount) {
-            /* ... */
-        }
-
         private async UniTask OnShotCollision(ShotSpawner.ShotCollision shotCollision) {
             if (shotCollision.Collider != null && shotCollision.Collider.gameObject.CompareTag("Character")) {
                 if (shotCollision.Collider.gameObject.transform.parent.GetComponent<CharacterView>() == _сharacterView) {
-                    DataRealtime.HP--;
+                    DataRealtime.HP -= shotCollision.Shot.Weapon.Damage;
                     if (DataRealtime.HP > 0 && DataRealtime.IsEnemy) {
                         ((AIController)_controller).Retreat();
                     }

@@ -1,2 +1,2 @@
 [{"Id": 1, "Name": "Enemy1", "HP": 1, "SkinId": 1, "WeaponId": 1},
-{"Id": 2, "Name": "Enemy2", "HP": 2, "SkinId": 2, "WeaponId": 2}]
+{"Id": 2, "Name": "Enemy2", "HP": 3, "SkinId": 2, "WeaponId": 2}]

@@ -21,10 +21,8 @@ namespace CyberBulletRun.Shop
             
             public Func<string, UniTask<ItemStatus>> LoadItemStatus;
             public Func<string, ItemStatus, UniTask> SetItemStatus;
-            public Func<UniTask<int>> GetCurrentWeapon;
-            public Func<UniTask<int>> GetCurrentSkin;
-            public Func<int, UniTask> SetCurrentWeapon;
-            public Func<int, UniTask> SetCurrentSkin;
+            public ReactiveProperty<WeaponData> CurrentWeapon;
+            public ReactiveProperty<SkinData> CurrentSkin;
         }
 
         private View.Screen _window;

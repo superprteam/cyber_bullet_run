@@ -24,6 +24,8 @@ namespace CyberBulletRun.Game
             public ReactiveCommand<string> HideWindow;
             
             public DataSet.Data DataLoaded;
+            public ReactiveProperty<WeaponData> CurrentWeapon;
+            public ReactiveProperty<SkinData> CurrentSkin;
         }
 
         private IWindow _window;
@@ -60,13 +62,13 @@ namespace CyberBulletRun.Game
             _levelData = _ctx.DataLoaded.Levels[levelNumber];
             
             
-            _currentStair = new ReactiveProperty<Stair>();
+            _currentStair = new ReactiveProperty<Stair>().AddTo(this);
             _stairs = new List<Stair>();
-            _shotSpawn = new ReactiveCommand<Shot>();
-            _shotCollision = new ReactiveCommand<ShotSpawner.ShotCollision>();
-            _nextStair = new ReactiveCommand();
-            _endGame = new ReactiveCommand<EndGameData>();
-            _keyPressed = new ReactiveCommand<int>();
+            _shotSpawn = new ReactiveCommand<Shot>().AddTo(this);
+            _shotCollision = new ReactiveCommand<ShotSpawner.ShotCollision>().AddTo(this);
+            _nextStair = new ReactiveCommand().AddTo(this);
+            _endGame = new ReactiveCommand<EndGameData>().AddTo(this);
+            _keyPressed = new ReactiveCommand<int>().AddTo(this);
 
             ((Screen)_window).SetCommands(_endGame, _keyPressed);
             
@@ -84,7 +86,7 @@ namespace CyberBulletRun.Game
                 Stairs = _stairs,
                 EndGame = _endGame,
                 KeyPressed = _keyPressed,
-            });
+            }).AddTo(this);
             
             _enemySpawner = new EnemySpawner(new EnemySpawner.Ctx {
                 Root = window,
@@ -106,12 +108,11 @@ namespace CyberBulletRun.Game
                 Id = 0,
                 Name = "player",
                 HP = 1,
-                SkinId = 1,
-                WeaponId = 1,
+                SkinId = _ctx.CurrentSkin.Value.Id,
+                WeaponId = _ctx.CurrentWeapon.Value.Id,
             };
-            var weapon = _ctx.DataLoaded.Weapons[playerData.WeaponId];
             
-            _player = new Character(new CharacterDataRealtime(playerData, weapon, false));
+            _player = new Character(new CharacterDataRealtime(playerData, _ctx.CurrentWeapon.Value, false)).AddTo(this);
             
             var playerController = new PlayerController(new PlayerController.PlayerControllerCtx() {
                 CurrentStair = _currentStair,
@@ -119,7 +120,7 @@ namespace CyberBulletRun.Game
                 NextStair = _nextStair,
                 EndGame = _endGame,
                 KeyPressed = _keyPressed,
-            });
+            }).AddTo(this);
             await _player.Init(playerController, playerView, _shotSpawn, _nextStair, _shotCollision);
             
             // stairs
@@ -127,13 +128,13 @@ namespace CyberBulletRun.Game
                 CameraScreen = Camera.allCameras[0],
                 CurrentStair = _currentStair,
                 Root = window,
-            });
+            }).AddTo(this);
 
             _shotSpawner = new ShotSpawner(new ShotSpawner.Ctx() {
                 Root = window,
                 ShotSpawn = _shotSpawn,
                 ShotCollision = _shotCollision,
-            });
+            }).AddTo(this);
             
             await _levelGenerate.GenerateLevel();
             

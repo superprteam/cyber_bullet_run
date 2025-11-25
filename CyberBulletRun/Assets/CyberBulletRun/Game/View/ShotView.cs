@@ -26,7 +26,7 @@ namespace CyberBulletRun.Game.View
         }
 
         public void UpdateInternal() {
-            transform.position += _shot.Direction * (_shot.Speed * Time.deltaTime);
+            transform.position += _shot.Direction * (_shot.Weapon.Speed * Time.deltaTime);
             _destroyTimer -= Time.deltaTime;
             if (_destroyTimer < 0) {
                 DisableView(null);

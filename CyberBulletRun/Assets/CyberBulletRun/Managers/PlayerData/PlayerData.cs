@@ -12,6 +12,8 @@ namespace CyberBulletRun.Managers.PlayerData {
         public class Ctx {
             public Dictionary<int, WeaponData> Weapons;
             public Dictionary<int, SkinData> Skins;
+            public ReactiveProperty<WeaponData> CurrentWeapon;
+            public ReactiveProperty<SkinData> CurrentSkin;
         }
         
         private CompositeDisposable _disposables;
@@ -20,7 +22,7 @@ namespace CyberBulletRun.Managers.PlayerData {
         
         public PlayerData(Ctx ctx) {
             _ctx = ctx;
-            
+
             _disposables = new CompositeDisposable();
         }
 
@@ -44,6 +46,12 @@ namespace CyberBulletRun.Managers.PlayerData {
                     ItemStatus = status,
                 });
             }
+            
+            _ctx.CurrentWeapon.Value = await GetCurrentWeapon();
+            _ctx.CurrentSkin.Value = await GetCurrentSkin();
+
+            _ctx.CurrentWeapon.Subscribe(async (weapon) => await OnChangeCurrentWeapon(weapon));
+            _ctx.CurrentSkin.Subscribe(async (skin) => await OnChangeCurrentSkin(skin));
         }
 
         private async UniTask UnlockAll() {
@@ -71,22 +79,22 @@ namespace CyberBulletRun.Managers.PlayerData {
             PlayerPrefs.SetInt(key, (int)status);
         }
 
-        public async UniTask<int> GetCurrentWeapon() {
+        private async UniTask<WeaponData> GetCurrentWeapon() {
             var weaponId = PlayerPrefs.GetInt("weapon", 1);
-            return weaponId;
+            return _ctx.Weapons[weaponId];
         } 
 
-        public async UniTask<int> GetCurrentSkin() {
+        private async UniTask<SkinData> GetCurrentSkin() {
             var skinId = PlayerPrefs.GetInt("skin", 1);
-            return skinId;
+            return _ctx.Skins[skinId];
         }
 
-        public async UniTask SetCurrentWeapon(int id) {
-            PlayerPrefs.SetInt("weapon", id);            
+        private async UniTask OnChangeCurrentWeapon(WeaponData weapon) {
+            PlayerPrefs.SetInt("weapon", weapon.Id);            
         }
 
-        public async UniTask SetCurrentSkin(int id) {
-            PlayerPrefs.SetInt("skin", id);            
+        private async UniTask OnChangeCurrentSkin(SkinData skin) {
+            PlayerPrefs.SetInt("skin", skin.Id);            
         }
         
         public void Dispose()

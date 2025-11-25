@@ -55,6 +55,8 @@ namespace CyberBulletRun.Managers.UIManager {
                     ShowWindow = ShowWindow,
                     HideWindow = HideWindow,
                     DataLoaded = _ctx.Data.DataLoaded,
+                    CurrentWeapon = _ctx.Data.CurrentWeapon,
+                    CurrentSkin = _ctx.Data.CurrentSkin,
                 }).AddTo(_disposables);
                 
                 _lastWindow = gameScreen;
@@ -71,10 +73,8 @@ namespace CyberBulletRun.Managers.UIManager {
                     Skins = _ctx.Data.DataLoaded.Skins,
                     LoadItemStatus = _ctx.Data.LoadItemStatus,
                     SetItemStatus = _ctx.Data.SetItemStatus,
-                    GetCurrentWeapon = _ctx.Data.GetCurrentWeapon,
-                    GetCurrentSkin = _ctx.Data.GetCurrentSkin,
-                    SetCurrentWeapon = _ctx.Data.SetCurrentWeapon,
-                    SetCurrentSkin = _ctx.Data.SetCurrentSkin,
+                    CurrentWeapon = _ctx.Data.CurrentWeapon,
+                    CurrentSkin = _ctx.Data.CurrentSkin,
                 }).AddTo(_disposables);
                 
                 _lastWindow = shopScreen;

@@ -44,9 +44,14 @@ namespace CyberBulletRun
             var weapons = dataLoaded.Weapons;
             var skins = dataLoaded.Skins;
 
+            ReactiveProperty<WeaponData> currentWeapon = new ReactiveProperty<WeaponData>().AddTo(this);
+            ReactiveProperty<SkinData> currentSkin = new ReactiveProperty<SkinData>().AddTo(this);
+            
             _playerData = new PlayerData(new PlayerData.Ctx() {
                 Weapons = weapons,
                 Skins = skins,
+                CurrentWeapon = currentWeapon,
+                CurrentSkin = currentSkin,
             });
 
             await _playerData.Load();
@@ -61,10 +66,8 @@ namespace CyberBulletRun
                     DataLoaded = dataLoaded,
                     LoadItemStatus = _playerData.LoadStatus,
                     SetItemStatus = _playerData.SetStatus,
-                    GetCurrentWeapon = _playerData.GetCurrentWeapon,
-                    GetCurrentSkin = _playerData.GetCurrentSkin,
-                    SetCurrentWeapon = _playerData.SetCurrentWeapon,
-                    SetCurrentSkin = _playerData.SetCurrentSkin,
+                    CurrentWeapon = currentWeapon,
+                    CurrentSkin = currentSkin,
                     }
             });
 

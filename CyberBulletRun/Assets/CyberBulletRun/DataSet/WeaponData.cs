@@ -7,7 +7,7 @@ namespace CyberBulletRun.DataSet {
         public int Id;
         public string Name;
         public float Speed;
-        public float Damage;
+        public int Damage;
         public float Spread;
         public int Ammo;
         public float Radius;

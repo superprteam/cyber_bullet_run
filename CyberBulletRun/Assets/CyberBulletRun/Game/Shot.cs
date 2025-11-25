@@ -1,4 +1,5 @@
 using System;
+using CyberBulletRun.DataSet;
 using UnityEngine;
 
 namespace CyberBulletRun.Game
@@ -6,6 +7,6 @@ namespace CyberBulletRun.Game
     public struct Shot {
         public Vector3 StartPos;
         public Vector3 Direction;
-        public float Speed;
+        public WeaponData Weapon;
     }
 }

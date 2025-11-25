@@ -1,16 +1,16 @@
 ManifestFileVersion: 0
 UnityVersion: 6000.0.54f1
-CRC: 1941045974
+CRC: 1572904865
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 5f9963c95e7203e8b36b842e669b69de
+    Hash: 8fa2d37f1334f2bd2a596dd5d5587459
   TypeTreeHash:
     serializedVersion: 2
-    Hash: 880338402d65a6ca4fa813af34ba36fb
+    Hash: e310fc60313f60fd11de17c88dd0fc09
   IncrementalBuildHash:
     serializedVersion: 2
-    Hash: c7505544abccdfbe310900ac0bc425ac
+    Hash: 5f5266180b512426a3578739481233e9
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -42,6 +42,8 @@ ClassTypes:
 - Class: 114
   Script: {fileID: 11500000, guid: 88d71805fd3278d49b2c7a5a2849076e, type: 3}
 - Class: 114
+  Script: {fileID: 11500000, guid: 8a8695521f0d02e499659fee002a26c2, type: 3}
+- Class: 114
   Script: {fileID: 11500000, guid: 59f8146938fff824cb5fd77236b75775, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: c6f4a95d8b2d0254d94071748e686053, type: 3}
@@ -67,6 +69,8 @@ ClassTypes:
   Script: {fileID: 11500000, guid: 2a0aef4f5dc0f9749ba4c32224580b61, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: 4c99791109a4a6d42ac93c24d0e3b9e6, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 2b7f3eee6d48d264ab7408105e4ae467, type: 3}
 - Class: 115
   Script: {instanceID: 0}
 - Class: 128
@@ -142,6 +146,7 @@ Assets:
 - Assets/Remote/Main/GameCanvas/Character.prefab
 - Assets/Remote/Main/MenuCanvas/MenuCanvas.prefab
 - Assets/Remote/Main/FaderCanvas/FaderCanvas.prefab
+- Assets/Remote/Main/ShopCanvas/Items/Item.prefab
 - Assets/Remote/Main/GameCanvas/Stairs/Stair2.prefab
 - Assets/Remote/Main/MenuCanvas/Images/Background.png
 Dependencies: []

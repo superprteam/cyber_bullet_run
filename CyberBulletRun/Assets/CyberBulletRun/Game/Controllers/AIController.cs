@@ -1,11 +1,12 @@
 using System.Collections.Generic;
 using CyberBulletRun.Game.View;
 using Cysharp.Threading.Tasks;
+using Shared.Disposable;
 using UniRx;
 using UnityEngine;
 
 namespace CyberBulletRun.Game.Controllers {
-    public class AIController : IController {
+    public class AIController : BaseDisposable, IController {
         
         private static readonly Vector3 HEART_UP = new Vector3(0, 0.3f, 0);
         

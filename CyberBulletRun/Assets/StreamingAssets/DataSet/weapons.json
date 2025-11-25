@@ -1,2 +1,2 @@
-[{"Id": 1, "Name": "Weapon1", "Speed": 3, "Damage": 1, "Spread": 15, "Ammo": 1, "Radius": 15, "RadiusSpeed": 1},
-{"Id": 2, "Name": "Weapon2", "Speed": 2, "Damage": 1, "Spread": 15, "Ammo": 3, "Radius": 15, "RadiusSpeed": 1}]
+[{"Id": 1, "Name": "Weapon1", "Speed": 4, "Damage": 1, "Spread": 15, "Ammo": 1, "Radius": 15, "RadiusSpeed": 1},
+{"Id": 2, "Name": "Weapon2", "Speed": 2, "Damage": 1, "Spread": 15, "Ammo": 3, "Radius": 5, "RadiusSpeed": 1}]

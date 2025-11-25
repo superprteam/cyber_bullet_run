@@ -31,10 +31,12 @@ namespace CyberBulletRun.Game
         private readonly Ctx _ctx;
         private Character _enemy;
         private CharacterView _enemyView;
+        private int _currentEnemyIndex;
 
         public EnemySpawner(Ctx ctx) {
             _ctx = ctx;
             _ctx.CurrentStair.Subscribe(async (stair) => await OnChangeCurrentStair(stair));
+            _currentEnemyIndex = 0;
         }
 
         private async UniTask SpawnEnemy(Stair stair) {
@@ -42,7 +44,7 @@ namespace CyberBulletRun.Game
             _enemyView = GameObject.Instantiate(characterPrefab as GameObject, stair.EnemySpawnPoint.position + new Vector3(0, 0.1f, 0), Quaternion.identity, _ctx.Root.transform).GetComponent<CharacterView>();
 
             int indexStair = _ctx.Stairs.IndexOf(stair);
-            var enemyData = _ctx.DataLoaded.Characters[_ctx.LevelData.Enemy[indexStair-1]];
+            var enemyData = _ctx.DataLoaded.Characters[_ctx.LevelData.Enemy[_currentEnemyIndex]];
             var weapon = _ctx.DataLoaded.Weapons[enemyData.WeaponId];
             _enemy = new Character(new CharacterDataRealtime(enemyData, weapon, true));
             await _enemy.Init(_ctx.Controller, _enemyView, _ctx.ShotSpawn, _ctx.NextStair, _ctx.ShotCollision);
@@ -50,6 +52,7 @@ namespace CyberBulletRun.Game
             _ctx.Controller.SetPos(stair.EnemyPoint.position, true);
 
             _ctx.Controller.SetTarget(_ctx.Stairs[indexStair-1].StopPoint.position);
+            _currentEnemyIndex++;
         }
 
         private async UniTask OnChangeCurrentStair(Stair stair) {

@@ -33,12 +33,12 @@ namespace CyberBulletRun.Shop.View
                 Destroy(child.gameObject);
             }
 
-            var currentWeapon = await _ctx.GetCurrentWeapon();
-            var currentSkin = await _ctx.GetCurrentSkin();
+            var currentWeapon = _ctx.CurrentWeapon.Value;
+            var currentSkin = _ctx.CurrentSkin.Value;
             string status;
             
             foreach (var weapon in _ctx.Weapons.Values) {
-                if (weapon.Id == currentWeapon) {
+                if (weapon.Id == currentWeapon.Id) {
                     status = "SELECTED";
                 } else {
                     status = (await _ctx.LoadItemStatus(weapon.ToString())).ToString();
@@ -48,7 +48,7 @@ namespace CyberBulletRun.Shop.View
             }
             
             foreach (var skin in _ctx.Skins.Values) {
-                if (skin.Id == currentSkin) {
+                if (skin.Id == currentSkin.Id) {
                     status = "SELECTED";
                 } else {
                     status = (await _ctx.LoadItemStatus(skin.ToString())).ToString();
@@ -64,7 +64,7 @@ namespace CyberBulletRun.Shop.View
             foreach (var weapon in _ctx.Weapons.Values) {
                 if (weapon.Name == itemName) {
                     if ((await _ctx.LoadItemStatus(weapon.ToString())) == ItemStatus.AVAILABLE) {
-                        _ctx.SetCurrentWeapon(weapon.Id);
+                        _ctx.CurrentWeapon.Value = weapon;
                         await ShowItems(_ctx);
                         //itemView.Init(weapon.Name, "SELECTED", OnClickItem);
                     }
@@ -74,7 +74,7 @@ namespace CyberBulletRun.Shop.View
             foreach (var skin in _ctx.Skins.Values) {
                 if (skin.Name == itemName) {
                     if ((await _ctx.LoadItemStatus(skin.ToString())) == ItemStatus.AVAILABLE) {
-                        _ctx.SetCurrentSkin(skin.Id);
+                        _ctx.CurrentSkin.Value = skin;
                         await ShowItems(_ctx);
                         //itemView.Init(skin.Name, "SELECTED", OnClickItem);
                     }
